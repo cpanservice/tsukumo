@@ -59,5 +59,48 @@ sub import {
     }
 }
 
-
 1;
+__END__
+
+=head1 NAME
+
+Tsukumo::Class - Class builder for Tsukumo
+
+=head1 SYNPOSIS
+
+    package Foo;
+    use strict;
+    use Tsukumo::Class; # same use Any::Moose;
+    
+    has bar => (
+        is => 'rw',
+    );
+    
+    __END_OF_CLASS__ # same no Any::Moose;
+
+=head1 DESCRIPTION
+
+This class is class builder for Tsukumo.
+
+This class uses L<Any::Moose> inside.
+
+=head1 FUNCTIONS
+
+=head2 C<init_class>
+
+=head2 C<end_of_class>
+
+=head2 C<install_end_of_class>
+
+=head2 C<import>
+
+=head1 AUTHOR
+
+Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
