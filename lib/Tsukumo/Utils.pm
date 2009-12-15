@@ -24,3 +24,30 @@ sub env_value {
 }
 
 __END_OF_CLASS__;
+
+=head1 NAME
+
+Tsukumo::Utils - Utility for Tsukumo
+
+=head1 SYNPOSIS
+
+    use Tsukumo::Utils @subs;
+
+=head1 FUNCTIONS
+
+=head2 C<env_value>
+
+    use Tsukumo::Utils qw( env_value );
+    
+    my $file = env_value('config') # get $ENV{'TSUKUMO_CONFIG'}
+
+=head1 AUTHOR
+
+Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
