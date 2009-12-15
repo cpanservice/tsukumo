@@ -2,12 +2,18 @@ use inc::Module::Install;
 name 'Tsukumo';
 all_from 'lib/Tsukumo.pm';
 
-# requires '';
+# core modules
+requires 'Any::Moose';
 
-tests 't/*.t';
+# Tsukumo::Utils
+requires 'Expoter::Lite';
+
+tests 't/*/*/*.t';
 author_tests 'xt';
 
-build_requires 'Test::More';
-use_test_base;
+test_requires 'Test::More';
+
 auto_include;
+auto_install;
+
 WriteAll;
