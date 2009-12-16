@@ -20,9 +20,11 @@ sub init_class {
 
 sub end_of_class {
     my ( $target ) = @_;
+    my $class = any_moose;
 
     $target->meta->make_immutable( inline_destructor => 1  );
-    eval "package ${target}; no Any::Moose;";
+
+    eval qq{package ${target}; ${class}->unimport() };
 
     return 1;
 }
@@ -58,6 +60,9 @@ sub import {
         Mouse->export_to_level(1);
     }
 }
+
+no Any::Moose;
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
