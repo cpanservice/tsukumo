@@ -64,4 +64,46 @@ no Any::Moose;
 __PACKAGE__->meta->make_immutable;
 1;
 
+__END__
 
+=head1 NAME
+
+Tsukumo::Role - Role builder for Tsukumo
+
+=head1 SYNPOSIS
+
+    package MyRole;
+    
+    use strict;
+    use Tsukumo::Role;
+    
+    requires 'foo';
+    
+    __END_OF_ROLE__;
+
+=head1 DESCRIPTION
+
+This class is role builder for Tsukumo.
+
+This class uses L<Any::Moose> inside.
+
+=head1 FUNCTIONS
+
+=head2 C<init_role>
+
+=head2 C<end_of_role>
+
+=head2 C<install_end_of_role>
+
+=head2 C<import>
+
+=head1 AUTHOR
+
+Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
