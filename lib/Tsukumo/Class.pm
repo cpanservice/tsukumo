@@ -9,6 +9,7 @@ sub init_class {
     my ( $target ) = @_;
 
     my $meta = any_moose('::Meta::Class')->initialize($target);
+       $meta->superclasses(any_moose('::Object')) if ( ! $meta->superclasses );
 
     no strict 'refs';
     no warnings 'redefine';
