@@ -20,10 +20,10 @@ sub init_class {
 }
 
 sub end_of_class {
-    my ( $target ) = @_;
+    my ( $target, @args ) = @_;
     my $class = any_moose;
 
-    $target->meta->make_immutable( inline_destructor => 1  );
+    $target->meta->make_immutable( @args );
 
     eval qq{package ${target}; ${class}->unimport() };
 
@@ -37,7 +37,7 @@ sub install_end_of_class {
 
     *{"${target}::__END_OF_CLASS__"} = sub {
         my $caller = caller(0);
-        end_of_class($caller);
+        end_of_class($caller, @_);
     };
 
 }
