@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use Test::More tests => 2;
-use Tsukumo::Exceptions;
+use Tsukumo::Exceptions qw( invalid_argument_error );
 
 local $@;
-eval { Tsukumo::Exception::InvalidArgumentError->throw( error => 'foo' ) };
+eval { invalid_argument_error error => 'foo'; };
 
 isa_ok( $@, 'Tsukumo::Exception::InvalidArgumentError' );
 is( $@->message, 'foo' );

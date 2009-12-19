@@ -3,6 +3,8 @@ package Tsukumo::Exceptions;
 use strict;
 use warnings;
 
+use base qw( Exporter::Lite );
+
 my %E;
 BEGIN {
     %E = (
@@ -11,6 +13,7 @@ BEGIN {
         },
         'Tsukumo::Exception::InvalidArgumentError' => {
             isa         => 'Tsukumo::Exception',
+            alias       => 'invalid_argument_error',
             description => 'Argument is not valid',
         },
     );
@@ -19,6 +22,13 @@ BEGIN {
 use Exception::Class ( %E );
 
 $_->Trace(1) for keys %E;
+
+our @EXPORT_OK;
+for my $def ( values %E ) {
+    if ( exists $def->{'alias'} ) {
+        push @EXPORT_OK, $def->{'alias'};
+    }
+}
 
 1;
 
@@ -46,6 +56,10 @@ This class is some exception classes for Tsukumo.
 =head1 EXCEPTIONS
 
 =head2 C<Tsukumo::Exception>
+
+=head2 C<Tsukumo::Exception::InvalidArgumentError>
+
+    invalid_argument_error error => $message;
 
 basic exceptions.
 
