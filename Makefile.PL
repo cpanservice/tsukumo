@@ -9,8 +9,10 @@ requires 'Any::Moose';
 requires 'Expoter::Lite';
 
 # Tsukumo::Exceptions
-
 requires 'Exception::Class';
+
+# Tsukumo::Class::Hookable
+requires 'Class::Hookable';
 
 tests 't/*/*/*.t';
 author_tests 'xt';
