@@ -1,7 +1,7 @@
 package Tsukumo::Utils;
 
 use strict;
-use Tsukumo::Class;
+use warnings;
 
 extends 'Exporter::Lite';
 
@@ -23,7 +23,7 @@ sub env_value {
     return;
 }
 
-__END_OF_CLASS__;
+1;
 
 =head1 NAME
 

@@ -1,7 +1,7 @@
 package Tsukumo::Exceptions;
 
 use strict;
-use Tsukumo::Class;
+use warnings;
 
 my %E;
 BEGIN {
@@ -16,7 +16,7 @@ use Exception::Class ( %E );
 
 $_->Trace(1) for keys %E;
 
-__END_OF_CLASS__;
+1;
 
 =head1 NAME
 
