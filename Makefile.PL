@@ -8,6 +8,10 @@ requires 'Any::Moose';
 # Tsukumo::Utils
 requires 'Expoter::Lite';
 
+# Tsukumo::Exceptions
+
+requires 'Exception::Class';
+
 tests 't/*/*/*.t';
 author_tests 'xt';
 
