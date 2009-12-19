@@ -6,9 +6,13 @@ use warnings;
 my %E;
 BEGIN {
     %E = (
-        'Tsukumo::Exception' => {
-            decription => 'Basic exception for Tsukumo',
-        }
+        'Tsukumo::Exception'                        => {
+            decription  => 'Basic exception for Tsukumo',
+        },
+        'Tsukumo::Exception::InvalidArgumentError' => {
+            isa         => 'Tsukumo::Exception',
+            description => 'Argument is not valid',
+        },
     );
 }
 
