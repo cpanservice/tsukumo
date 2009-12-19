@@ -51,7 +51,7 @@ Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
 
 =head1 SEE ALSO
 
-L<Exception::Class>, L<Try::Tiny>
+L<Exception::Class>, L<Exception::Class::Base>
 
 =head1 LICENSE
 
