@@ -3,7 +3,7 @@ package Tsukumo::Utils;
 use strict;
 use warnings;
 
-extends 'Exporter::Lite';
+use base qw( Exporter::Lite );
 
 our @EXPORT_OK = qw(
     env_value
