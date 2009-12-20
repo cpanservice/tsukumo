@@ -243,9 +243,15 @@ It is necessary to be a hash including scalar or the CODE rreference.
 
 This method is merged other hashes.
 
+This method does not currently check for cycles.
+
 =head1 AUTHOR
 
 Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
+
+=head1 SEE ALSO
+
+L<Encode>, L<Hash::Merge::Simple>
 
 =head1 LICENSE
 
