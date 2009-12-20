@@ -5,6 +5,7 @@ use warnings;
 
 use Scalar::Util qw( reftype );
 use Encode ();
+use Hash::Merge::Simple ();
 use Tsukumo::Exceptions qw( invalid_argument_error );
 
 sub new {
@@ -126,6 +127,13 @@ sub interpolate {
     return $self;
 }
 
+sub merge {
+    my ( $self, @rights ) = @_;
+    %{ $self } = %{ Hash::Merge::Simple->merge( $self, @rights ) };
+
+    return $self;
+}
+
 1;
 __END__
 
@@ -228,6 +236,12 @@ The value replaced with variables.
 It is necessary to be a hash including scalar or the CODE rreference.
 
 =back
+
+=head2 C<merge>
+
+    $vars->mereg( \%hashA, \%hashB, \%hashN );
+
+This method is merged other hashes.
 
 =head1 AUTHOR
 
