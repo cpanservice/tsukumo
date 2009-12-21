@@ -25,6 +25,7 @@ sub end_of_role {
 
     eval qq{package ${target}; ${class}->unimport()};
 
+    return 1;
 }
 
 sub install_end_of_role {
