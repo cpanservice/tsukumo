@@ -14,6 +14,11 @@ requires 'Exception::Class';
 # Tsukumo::Class::Hookable
 requires 'Class::Hookable';
 
+# Tsukumo::Class::Variables
+requires 'Scalar::Util';
+requires 'Encode';
+requires 'Hash::Merge::Simple';
+
 tests 't/*/*/*.t';
 author_tests 'xt';
 
