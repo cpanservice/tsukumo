@@ -4,9 +4,10 @@ use strict;
 use warnings;
 
 use base qw( Exporter::Lite );
+use File::Spec::Unix;
 
 our @EXPORT_OK = qw(
-    env_value
+    env_value rel2abs
 );
 
 sub env_value {
@@ -21,6 +22,18 @@ sub env_value {
     }
 
     return;
+}
+
+sub rel2abs {
+    my $path    = shift;
+    my $is_dir  = $path =~ m{/$};
+       $path    = File::Spec::Unix->canonpath($path);
+       $path    =~ s{^/*}{};
+       $path    =~ s{/*$}{};
+       $path    = "/${path}";
+       $path    = "${path}/"    if ( $is_dir );
+       $path    =~ s{/+}{/};
+    return $path;
 }
 
 1;
