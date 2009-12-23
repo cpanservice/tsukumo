@@ -54,6 +54,19 @@ Tsukumo::Utils - Utility for Tsukumo
     
     my $file = env_value('config') # get $ENV{'TSUKUMO_CONFIG'}
 
+This function is getting C<$ENV{"TSUKUMO_${argument}"}> value.
+
+If not defined C<$ENV{"TSKUMO_${argument}"}>, this function is returned nothing.
+
+=head2 C<rel2abs>
+
+    use Tsukumo::Utils qw( rel2abs );
+    
+    my $path = rel2abs('path/to/././file.txt');
+       $path # '/path/to/file.txt';
+
+This function is logical cleanup of a argument path.
+
 =head1 AUTHOR
 
 Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
