@@ -5,6 +5,10 @@ use warnings;
 
 use base qw( Time::Piece );
 
+use Tsukumo::Exceptions;
+use Date::Parse ();
+use Time::Local ();
+
 sub w3cdtf {
     my $self = shift;
 
@@ -24,6 +28,42 @@ sub w3cdtf {
     }
 
     return "${date}${tz}";
+}
+
+sub parse_dwim {
+    my ( $class, $str ) = @_;
+    my $time = Date::Parse::str2time($str);
+
+    return $class->gmtime( $time );
+}
+
+sub timegm {
+    my $class = shift;
+    my @args  = @_;
+
+    my $offset;
+       $offset = pop @args if ( @args == 7 );
+       $offset = 0 if ( ! defined $offset );
+
+    my $time = Time::Local::timegm(@args);
+
+    return $class->gmtime( $time + $offset );
+}
+
+sub new_from_hash {
+    my ( $class, %args ) = @_;
+
+    my $year    = delete $args{'year'} or Tsukumo::Exception::InvalidArgumentError->throw( error => q{Argument 'year' is not set.} );
+    my $month   = ( delete $args{'month'}   || 1 ) - 1;
+    my $day     = delete $args{'day'}       || 1;
+    my $hr      = delete $args{'hour'}      || 0;
+    my $min     = delete $args{'minute'}    || 0;
+    my $sec     = delete $args{'second'}    || 0;
+    my $offset  = delete $args{'offset'}    || 0;
+    $year       = $year - 1900;
+
+    my $time    = Time::Local::timegm( $sec, $min, $hr, $day, $month, $year );
+    return $class->gmtime( $time + $offset );
 }
 
 1;
@@ -49,6 +89,40 @@ This class is L<Time::Piece> subclass for Tsukumo.
 
 See L<Time::Piece> document.
 
+=head2 C<new_from_hash>
+
+    my $date = Tsukumo::Class::Date->new_from_hash(
+        year    => 2009,
+        month   => 12,
+        day     => 24,
+        hour    => 12,
+        minute  => 10,
+        second  => 30,
+        offset  => 9 * 60 * 60,
+    );
+
+This method is make instance from hash.
+
+=head2 C<parse_dwim>
+
+    my $date = Tsukumo::Class::Date->parse_dwin($datetime);
+
+This method parse datetime string.
+
+Parse datetime string function is implemented by L<Date::Parse>.
+
+Please see L<Date::Parse> about support datetime format.
+
+=head2 C<timegm>
+
+    my $date = Tsukumo::Class::Date->timegm( 0, 0, 0, 1, 1, 1970 );
+
+Same as:
+
+    my $date = Tsukumo::Class::Date->gmtime( Time::Local::timegm( 0, 0, 0, 1, 1, 1970 ) );
+
+See also L<Time::Local>.
+
 =head2 C<w3cdtf>
 
     my w3cdtf = localtime->w3cdtf;
@@ -58,6 +132,10 @@ This method is returned W3C datetime format datetime.
 =head1 AUTHOR
 
 Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
+
+=head1 SEE ALSO
+
+L<Date::Parse>, L<Time::Local>
 
 =head1 LICENSE
 
