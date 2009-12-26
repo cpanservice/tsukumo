@@ -19,6 +19,9 @@ requires 'Scalar::Util';
 requires 'Encode';
 requires 'Hash::Merge::Simple';
 
+# Tsukumo::Class::Date
+requires 'Time::Piece';
+
 tests 't/*/*/*.t';
 author_tests 'xt';
 
