@@ -8,9 +8,7 @@ use base qw( Time::Piece );
 sub w3cdtf {
     my $self = shift;
 
-    my $date    = $self->ymd('-');
-    my $time    = $self->hms(':');
-
+    my $date    = $self->datetime;
     my $offset  = $self->tzoffset;
     my $tz;
 
@@ -25,7 +23,7 @@ sub w3cdtf {
         $tz = "${pm}" . sprintf('%02d', $hr) . ':' . sprintf('%02d', $min);
     }
 
-    return "${date}T${time}${tz}";
+    return "${date}${tz}";
 }
 
 1;
