@@ -7,9 +7,9 @@ use Any::Moose (
         FilePath FileName FileExtension
         Date
     )] ],
-    'X::Types::' . any_moose()  => [qw( Str Int ArrayRef HashRef Object )],
 );
 
+use Tsukumo::Types::Builtin qw( Str Int ArrayRef HashRef Object );
 use Tsukumo::Utils qw( rel2abs );
 use Tsukumo::Class::Date ();
 
