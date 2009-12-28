@@ -66,6 +66,28 @@ sub new_from_hash {
     return $class->gmtime( $time + $offset );
 }
 
+sub clone {
+    my ( $self, %args ) = @_;
+
+    $args{'year'}   ||= $self->year;
+    $args{'month'}  ||= $self->mon;
+    $args{'day'}    ||= $self->mday;
+    $args{'hour'}   ||= $self->hour;
+    $args{'minute'} ||= $self->min;
+    $args{'second'} ||= $self->sec;
+    $args{'offset'} ||= scalar($self->tzoffset);
+
+    return $self->new_from_hash( %args );
+}
+
+sub now {
+    my ( $class, $offset ) = @_;
+
+    $offset ||= 0;
+
+    return $class->gmtime( time + $offset );
+}
+
 1;
 __END__
 
@@ -122,6 +144,23 @@ Same as:
     my $date = Tsukumo::Class::Date->gmtime( Time::Local::timegm( 0, 0, 0, 1, 1, 1970 ) );
 
 See also L<Time::Local>.
+
+=head2 C<now>
+
+    my $now = Tsukumo::Class::Date->now;                # same as Tsukumo::Class::Date->new( time );
+    my $now = Tsukumo::Class::Date->now( $tzoffset );   # same as Tsukumo::Class::Date->new( time + $tzoffset );
+
+This method is same C<Tsukumo::Class::Date-E<gt>new( time )>.
+
+=head2 C<clone>
+
+    my $date = Tsukumo::Class::Date->now;
+    my $clone = $date->clone;
+    my $clone = $date->clone( year => 2009 );
+
+This method is clone datetime object.
+
+
 
 =head2 C<w3cdtf>
 
