@@ -5,12 +5,19 @@ use Any::Moose;
 use Any::Moose (
     'X::Types'                  => [ -declare => [qw(
         FilePath FileName FileExtension
+        Date
     )] ],
-    'X::Types::' . any_moose()  => [qw( Str ArrayRef )],
+    'X::Types::' . any_moose()  => [qw( Str Int ArrayRef HashRef Object )],
 );
 
 use Tsukumo::Utils qw( rel2abs );
+use Tsukumo::Class::Date ();
+
 use File::Spec::Unix;
+use Time::Local ();
+use Date::Parse ();
+
+# FilePath, FileName and FileExtension
 
 subtype FilePath,
     as Str,
@@ -55,6 +62,24 @@ coerce FileExtension,
         },
 ;
 
+# Date
+
+subtype Date,
+    as Object,
+    where { ref $_ eq 'Tsukumo::Class::Date' },
+    message { "Object is not Tsukumo::Class::Date object" }
+;
+
+coerce Date,
+    from Int,
+        via { Tsukumo::Class::Date->new($_) },
+    from Str,
+        via { Tsukumo::Class::Date->parse_dwim($_) },
+    from ArrayRef,
+        via { Tsukumo::Class::Date->timegm( @{ $_ } ) },
+    from HashRef,
+        via { Tsukumo::Class::Date->new_from_hash( %{ $_ } ) },
+;
 
 no Any::Moose;
 __PACKAGE__->meta->make_immutable;
@@ -97,6 +122,14 @@ This class is provider (Moose|Mouse) types for Tsukumo.
 =item C<FileName>
 
 =item C<FileExtension>
+
+=back
+
+=head2 datetime
+
+=over
+
+=item C<Date>
 
 =back
 
