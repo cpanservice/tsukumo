@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use utf8;
 use Any::Moose;
+use Tsukumo::Exceptions;
 
 sub init_class {
     my ( $target ) = @_;
@@ -20,33 +21,50 @@ sub init_class {
 }
 
 sub end_of_class {
-    my ( $target, @args ) = @_;
+    my ( $target, $unimport, @args ) = @_;
     my $class = any_moose;
 
     $target->meta->make_immutable( @args );
 
-    eval qq{package ${target}; ${class}->unimport() };
+    my $eval = qq{ package ${target}; \n};
+    for my $module ( @{ $unimport }  ) {
+        $eval .= qq{ ${module}->unimport(); \n};
+    }
+       $eval .= qq{ ${class}->unimport(); };
+
+    local $@;
+    eval $eval;
+    Tsukumo::Exception->throw( error => "Cannot umimport Tsukumo::Class: $@" )
+        if ( $@ );
 
     return 1;
 }
 
 sub install_end_of_class {
-    my ( $target ) = @_;
+    my ( $target, $unimport ) = @_;
 
     no strict 'refs';
 
     *{"${target}::__END_OF_CLASS__"} = sub {
         my $caller = caller(0);
-        end_of_class($caller, @_);
+        end_of_class($caller, $unimport, @_);
     };
 
 }
 
 sub import {
-    my $class = shift;
-    my $caller = caller(0);
+    my $class       = shift;
+    my $caller      = caller(0);
+    my @modules     = ();
+    my @unimport    = ();
 
-    install_end_of_class($caller);
+    while ( my ( $module, $args) = splice @_, 0, 2 ) {
+        $module = any_moose($module);
+        push @modules, ( $module => $args );
+        push @unimport, $module;
+    }
+
+    install_end_of_class( $caller, \@unimport );
 
     strict->import;
     warnings->import;
@@ -60,6 +78,16 @@ sub import {
     else {
         Mouse->export_to_level(1);
     }
+
+    while ( my ( $module, $args ) = splice @modules, 0, 2 ) {
+        local $@;
+        Any::Moose::load_class($module);
+        eval  qq{package ${caller};\n}
+            .  q{$module->import( @{ $args } )};
+    }
+    Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: $@" ) if ( $@ );
+
+    return;
 }
 
 no Any::Moose;
