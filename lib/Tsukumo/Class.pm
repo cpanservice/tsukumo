@@ -58,7 +58,8 @@ sub import {
     my @modules     = ();
     my @unimport    = ();
 
-    while ( my ( $module, $args) = splice @_, 0, 2 ) {
+    while ( my $module = shift ) {
+        my $args = ( @_ && ref($_[0]) ) ? shift : [] ;
         $module = any_moose($module);
         push @modules, ( $module => $args );
         push @unimport, $module;
@@ -81,11 +82,13 @@ sub import {
 
     while ( my ( $module, $args ) = splice @modules, 0, 2 ) {
         local $@;
-        Any::Moose::load_class($module);
+        eval { Any::Moose::load_class($module) };
+        Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: $@" ) if ( $@ );
+
         eval  qq{package ${caller};\n}
             .  q{$module->import( @{ $args } )};
+        Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: $@" ) if ( $@ );
     }
-    Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: $@" ) if ( $@ );
 
     return;
 }
