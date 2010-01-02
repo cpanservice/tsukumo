@@ -44,6 +44,7 @@ sub install_end_of_class {
     my ( $target, $unimport ) = @_;
 
     no strict 'refs';
+    no warnings 'redefine';
 
     *{"${target}::__END_OF_CLASS__"} = sub {
         my $caller = caller(0);
