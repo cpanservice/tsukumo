@@ -41,6 +41,7 @@ sub install_end_of_role {
     my ( $target, $unimport ) = @_;
 
     no strict 'refs';
+    no warnings 'redefine';
     *{"${target}::__END_OF_ROLE__"} = sub {
         my $caller = caller(0);
         end_of_role($caller, $unimport, @_);
