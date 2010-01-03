@@ -5,12 +5,24 @@ use warnings;
 use utf8;
 use Any::Moose;
 
-BEGIN { eval qq{ require @{[ any_moose('::Role') ]} }; }
+my $metaclass;
+my $roleclass;
+my $is_moose    = Any::Moose::moose_is_preferred();
+
+BEGIN {
+    $metaclass = any_moose('::Meta::Role');
+    $roleclass = any_moose('::Role');
+
+    my $module = $roleclass;
+       $module =~ s{::}{/}g;
+       $module = "${module}.pm";
+    require $module;
+}
 
 sub init_role {
     my ( $target ) = @_;
 
-    my $meta = any_moose('::Meta::Role')->initialize($target);
+    my $meta = $metaclass->initialize($target);
 
     no strict 'refs';
     no warnings 'redefine';
@@ -21,13 +33,11 @@ sub init_role {
 sub end_of_role {
     my ( $target, $unimport, @args ) = @_;
 
-    my $class = any_moose('::Role');
-
     my $eval = qq{package ${target};\n};
     for my $module ( @{ $unimport } ) {
         $eval .= qq{ ${module}->unimport(); \n};
     }
-      $eval .= qq{${class}->unimport};
+      $eval .= qq{${roleclass}->unimport};
 
     local $@;
     eval $eval;
@@ -70,7 +80,7 @@ sub import {
 
     init_role($caller);
 
-    if ( Any::Moose::moose_is_preferred() ) {
+    if ( $is_moose ) {
         Moose::Role->import({ into_level => 1 });
     }
     else {
