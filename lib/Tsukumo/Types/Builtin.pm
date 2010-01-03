@@ -4,8 +4,10 @@ use strict;
 use warnings;
 
 use Any::Moose;
-use Any::Moose 'X::Types';
-use Any::Moose '::Util::TypeConstraints';
+use Any::Moose qw(
+    X::Types
+    ::Util::TypeConstraints
+);
 
 use constant type_storage => {
     map { $_ => $_ } any_moose('::Util::TypeConstraints')->list_all_builtin_type_constraints
