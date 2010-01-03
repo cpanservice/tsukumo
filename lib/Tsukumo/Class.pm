@@ -26,7 +26,6 @@ sub init_class {
 
 sub end_of_class {
     my ( $target, $unimport, @args ) = @_;
-    my $class = $oosys;
 
     $target->meta->make_immutable( @args );
 
@@ -34,7 +33,7 @@ sub end_of_class {
     for my $module ( @{ $unimport }  ) {
         $eval .= qq{ ${module}->unimport(); \n};
     }
-       $eval .= qq{ ${class}->unimport(); };
+       $eval .= qq{ ${oosys}->unimport(); };
 
     local $@;
     eval $eval;
