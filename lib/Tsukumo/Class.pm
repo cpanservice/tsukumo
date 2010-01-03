@@ -37,7 +37,7 @@ sub end_of_class {
 
     local $@;
     eval $eval;
-    Tsukumo::Exception->throw( error => "Cannot umimport Tsukumo::Class: $@" )
+    Tsukumo::Exception->throw( error => "Cannot umimport Tsukumo::Class: ${@}" )
         if ( $@ );
 
     return 1;
@@ -87,11 +87,11 @@ sub import {
     while ( my ( $module, $args ) = splice @modules, 0, 2 ) {
         local $@;
         eval { Any::Moose::load_class($module) };
-        Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: $@" ) if ( $@ );
+        Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: ${@}" ) if ( $@ );
 
         eval  qq{package ${caller};\n}
             .  q{$module->import( @{ $args } )};
-        Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: $@" ) if ( $@ );
+        Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: ${@}" ) if ( $@ );
     }
 
     return;
