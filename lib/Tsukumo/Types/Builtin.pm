@@ -3,20 +3,19 @@ package Tsukumo::Types::Builtin;
 use strict;
 use warnings;
 
-use Any::Moose;
-use Any::Moose qw(
+use Tsukumo::Class;
+use Tsukumo::Class qw(
     X::Types
     ::Util::TypeConstraints
 );
 
 use constant type_storage => {
-    map { $_ => $_ } any_moose('::Util::TypeConstraints')->list_all_builtin_type_constraints
+    map { $_ => $_ } Any::Moose::any_moose('::Util::TypeConstraints')->list_all_builtin_type_constraints
 };
 
 
-no Any::Moose;
-__PACKAGE__->meta->make_immutable;
-1;
+__END_OF_CLASS__;
+
 __END__
 
 =head1 NAME

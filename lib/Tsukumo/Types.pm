@@ -1,14 +1,13 @@
 package Tsukumo::Types;
 
 use strict;
-use Any::Moose;
-use Any::Moose (
-    'X::Types'                  => [ -declare => [qw(
+use Tsukumo::Class;
+use Tsukumo::Class (
+    'X::Types'  => [ -declare => [qw(
         FilePath FileName FileExtension
         Date
-    )] ],
+    )] ]
 );
-
 use Tsukumo::Types::Builtin qw( Str Int ArrayRef HashRef Object );
 use Tsukumo::Utils qw( rel2abs );
 use Tsukumo::Class::Date ();
@@ -79,8 +78,7 @@ coerce Date,
         via { Tsukumo::Class::Date->new_from_hash( %{ $_ } ) },
 ;
 
-no Any::Moose;
-__PACKAGE__->meta->make_immutable;
+__END_OF_CLASS__;
 
 1;
 

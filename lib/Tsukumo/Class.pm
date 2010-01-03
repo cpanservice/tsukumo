@@ -3,12 +3,13 @@ package Tsukumo::Class;
 use strict;
 use warnings;
 use utf8;
-use Any::Moose;
 use Tsukumo::Exceptions;
 
-my $metaclass   = any_moose('::Meta::Class');
-my $superclass  = any_moose('::Object');
-my $oosys       = any_moose();
+BEGIN { require Any::Moose };
+
+my $metaclass   = Any::Moose::any_moose('::Meta::Class');
+my $superclass  = Any::Moose::any_moose('::Object');
+my $oosys       = Any::Moose::any_moose();
 
 sub init_class {
     my ( $target ) = @_;
@@ -64,7 +65,7 @@ sub import {
 
     while ( my $module = shift ) {
         my $args = ( @_ && ref($_[0]) ) ? shift : [] ;
-        $module = any_moose($module);
+        $module = Any::Moose::any_moose($module);
         push @modules, ( $module => $args );
         push @unimport, $module;
     }
@@ -96,9 +97,6 @@ sub import {
 
     return;
 }
-
-no Any::Moose;
-__PACKAGE__->meta->make_immutable;
 
 1;
 __END__

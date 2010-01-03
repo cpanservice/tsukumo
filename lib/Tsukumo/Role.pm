@@ -3,15 +3,16 @@ package Tsukumo::Role;
 use strict;
 use warnings;
 use utf8;
-use Any::Moose;
 
 my $metaclass;
 my $roleclass;
 my $is_moose    = Any::Moose::moose_is_preferred();
 
 BEGIN {
-    $metaclass = any_moose('::Meta::Role');
-    $roleclass = any_moose('::Role');
+    require Any::Moose;
+
+    $metaclass = Any::Moose::any_moose('::Meta::Role');
+    $roleclass = Any::Moose::any_moose('::Role');
 
     my $module = $roleclass;
        $module =~ s{::}{/}g;
@@ -67,7 +68,7 @@ sub import {
 
     while ( my $module = shift @_ ) {
         my $args = @_ && ref($_[0]) ? shift : [];
-        $module = any_moose($module);
+        $module = Any::Moose::any_moose($module);
         push @modules, ( $module, $args );
         push @unimport, $module;
     }
@@ -100,10 +101,7 @@ sub import {
     return;
 }
 
-no Any::Moose;
-__PACKAGE__->meta->make_immutable;
 1;
-
 __END__
 
 =head1 NAME
