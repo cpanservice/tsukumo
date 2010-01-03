@@ -6,11 +6,15 @@ use utf8;
 use Any::Moose;
 use Tsukumo::Exceptions;
 
+my $metaclass   = any_moose('::Meta::Class');
+my $superclass  = any_moose('::Object');
+my $oosys       = any_moose();
+
 sub init_class {
     my ( $target ) = @_;
 
-    my $meta = any_moose('::Meta::Class')->initialize($target);
-       $meta->superclasses(any_moose('::Object')) if ( ! $meta->superclasses );
+    my $meta = $metaclass->initialize($target);
+       $meta->superclasses( $superclass ) if ( ! $meta->superclasses );
 
     no strict 'refs';
     no warnings 'redefine';
@@ -22,7 +26,7 @@ sub init_class {
 
 sub end_of_class {
     my ( $target, $unimport, @args ) = @_;
-    my $class = any_moose;
+    my $class = $oosys;
 
     $target->meta->make_immutable( @args );
 
@@ -74,7 +78,7 @@ sub import {
 
     init_class($caller);
 
-    if ( Any::Moose::moose_is_preferred() ) {
+    if ( $oosys eq 'Moose' ) {
         Moose->import({ into_level => 1 });
     }
     else {
