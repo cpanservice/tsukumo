@@ -8,9 +8,10 @@ use Tsukumo::Class qw(
     X::Types
     ::Util::TypeConstraints
 );
+use Tsukumo::Utils ();
 
 use constant type_storage => {
-    map { $_ => $_ } Any::Moose::any_moose('::Util::TypeConstraints')->list_all_builtin_type_constraints
+    map { $_ => $_ } Tsukumo::Utils::any_moose('::Util::TypeConstraints')->list_all_builtin_type_constraints
 };
 
 
