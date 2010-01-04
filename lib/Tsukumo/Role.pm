@@ -4,15 +4,14 @@ use strict;
 use warnings;
 use utf8;
 
+use Tsukumo::Utils ();
+
 my $metaclass;
 my $roleclass;
-my $is_moose    = Any::Moose::moose_is_preferred();
 
 BEGIN {
-    require Any::Moose;
-
-    $metaclass = Any::Moose::any_moose('::Meta::Role');
-    $roleclass = Any::Moose::any_moose('::Role');
+    $metaclass = Tsukumo::Utils::any_moose('::Meta::Role');
+    $roleclass = Tsukumo::Utils::any_moose('::Role');
 
     my $module = $roleclass;
        $module =~ s{::}{/}g;
@@ -68,7 +67,7 @@ sub import {
 
     while ( my $module = shift @_ ) {
         my $args = @_ && ref($_[0]) ? shift : [];
-        $module = Any::Moose::any_moose($module);
+        $module = Tsukumo::Utils::any_moose($module);
         push @modules, ( $module, $args );
         push @unimport, $module;
     }
@@ -81,7 +80,7 @@ sub import {
 
     init_role($caller);
 
-    if ( $is_moose ) {
+    if ( Tsukumo::Utils::is_moosed ) {
         Moose::Role->import({ into_level => 1 });
     }
     else {
@@ -90,7 +89,7 @@ sub import {
 
     while ( my ( $module, $args ) = splice @modules, 0, 2 ) {
         local $@;
-        eval { Any::Moose::load_class($module) };
+        eval { Tsukumo::Utils::load_class($module) };
         Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Role: ${@}" ) if ( $@ );
 
         eval qq{package ${caller};\n}
@@ -122,8 +121,6 @@ Tsukumo::Role - Role builder for Tsukumo
 =head1 DESCRIPTION
 
 This class is role builder for Tsukumo.
-
-This class uses L<Any::Moose> inside.
 
 =head1 FUNCTIONS
 

@@ -4,12 +4,17 @@ use strict;
 use warnings;
 use utf8;
 use Tsukumo::Exceptions;
+use Tsukumo::Utils ();
 
-BEGIN { require Any::Moose };
+my $metaclass;
+my $superclass;
+my $moose;
 
-my $metaclass   = Any::Moose::any_moose('::Meta::Class');
-my $superclass  = Any::Moose::any_moose('::Object');
-my $oosys       = Any::Moose::any_moose();
+BEGIN {
+    $metaclass  = Tsukumo::Utils::any_moose('::Meta::Class');
+    $superclass = Tsukumo::Utils::any_moose('::Object');
+    $moose      = Tsukumo::Utils::any_moose();
+}
 
 sub init_class {
     my ( $target ) = @_;
@@ -34,7 +39,7 @@ sub end_of_class {
     for my $module ( @{ $unimport }  ) {
         $eval .= qq{ ${module}->unimport(); \n};
     }
-       $eval .= qq{ ${oosys}->unimport(); };
+       $eval .= qq{ ${moose}->unimport(); };
 
     local $@;
     eval $eval;
@@ -65,7 +70,7 @@ sub import {
 
     while ( my $module = shift ) {
         my $args = ( @_ && ref($_[0]) ) ? shift : [] ;
-        $module = Any::Moose::any_moose($module);
+        $module = Tsukumo::Utils::any_moose($module);
         push @modules, ( $module => $args );
         push @unimport, $module;
     }
@@ -78,7 +83,7 @@ sub import {
 
     init_class($caller);
 
-    if ( $oosys eq 'Moose' ) {
+    if ( $moose eq 'Moose' ) {
         Moose->import({ into_level => 1 });
     }
     else {
@@ -87,7 +92,7 @@ sub import {
 
     while ( my ( $module, $args ) = splice @modules, 0, 2 ) {
         local $@;
-        eval { Any::Moose::load_class($module) };
+        eval { Tsukumo::Utils::load_class($module) };
         Tsukumo::Exception->throw( error => "Cannot import Tsukumo::Class: ${@}" ) if ( $@ );
 
         eval  qq{package ${caller};\n}
@@ -120,8 +125,6 @@ Tsukumo::Class - Class builder for Tsukumo
 =head1 DESCRIPTION
 
 This class is class builder for Tsukumo.
-
-This class uses L<Any::Moose> inside.
 
 =head1 FUNCTIONS
 
