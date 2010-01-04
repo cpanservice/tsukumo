@@ -3,7 +3,7 @@ package Tsukumo::Class::Date;
 use strict;
 use warnings;
 
-use base qw( Time::Piece );
+use parent qw( Time::Piece );
 
 use Tsukumo::Exceptions;
 use Date::Parse ();

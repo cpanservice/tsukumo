@@ -3,7 +3,7 @@ package Tsukumo::Exceptions;
 use strict;
 use warnings;
 
-use base qw( Exporter::Lite );
+use parent qw( Exporter::Lite );
 
 my %E;
 BEGIN {
