@@ -3,11 +3,29 @@ package Tsukumo::Utils;
 use strict;
 use warnings;
 
-use base qw( Exporter::Lite );
+use parent qw( Exporter::Lite );
 use File::Spec::Unix;
+use Tsukumo::Exceptions;
+
+our $is_moosed;
+
+BEGIN {
+    if ( exists $INC{'Class/MOP.pm'} ) {
+        $is_moosed = 1;
+    }
+    elsif ( eval { require Mouse } ) {
+        $is_moosed = 0;
+    }
+    elsif ( eval { require Moose } ) {
+        $is_moosed = 1;
+    }
+    else {
+        Tsukumo::Exception->throw( error => 'Unable to locate Mouse or Moose in INC' );
+    }
+};
 
 our @EXPORT_OK = qw(
-    env_value rel2abs
+    env_value rel2abs load_class any_moose is_moosed
 );
 
 sub env_value {
@@ -35,6 +53,42 @@ sub rel2abs {
        $path    =~ s{/+}{/};
     return $path;
 }
+
+sub load_class {
+    my ( $class ) = @_;
+
+    $class =~ s{::}{/}g;
+    $class = "${class}.pm";
+
+    require $class;
+}
+
+my %ClassCache = ();
+sub any_moose {
+    my ( $arg ) = @_;
+         $arg   = q{} if ( ! defined $arg );
+
+    if ( exists $ClassCache{$arg} ) {
+        return $ClassCache{$arg};
+    }
+
+    my $class = $arg;
+    $class = 'Moose' if ( $arg eq q{} );
+    $class =~ s{^X::}{MooseX::};
+    $class =~ s{^::}{Moose::};
+    $class =~ s{^Mouse(X?)\b}{Moose$1};
+    $class =~ s{^(?!Moose)}{Moose::};
+
+    if ( ! $is_moosed ) {
+        $class =~ s{^Moose}{Mouse};
+    }
+
+    $ClassCache{$arg} = $class;
+
+    return $class;
+}
+
+sub is_moosed { $is_moosed };
 
 1;
 
@@ -66,6 +120,25 @@ If not defined C<$ENV{"TSKUMO_${argument}"}>, this function is returned nothing.
        $path # '/path/to/file.txt';
 
 This function is logical cleanup of a argument path.
+
+=head2 C<is_moosed>
+
+    use Tsukumo::Utils qw( is_moosed );
+    
+    my $mode = ( is_moosed() ) ? 'Moose' : 'Mouse' ;
+
+This function is returned Moose mode or Mouse mode.
+
+if this function is returned true, class builder is Moose.
+
+=head2 C<any_moose>
+
+    use Tsukumo::Utils qw( any_moose );
+    
+    my $builder     = any_moose;
+    my $metaclass   = any_moose('::Meta::Class');
+
+This function is geneator of (Moose|Mouse) class names.
 
 =head1 AUTHOR
 

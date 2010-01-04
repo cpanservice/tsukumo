@@ -3,7 +3,6 @@ name 'Tsukumo';
 all_from 'lib/Tsukumo.pm';
 
 # core modules
-requires 'Any::Moose'   => 0.11;
 requires 'Mouse'        => 0.45;
 requires 'parent';
 
