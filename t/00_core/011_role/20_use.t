@@ -27,6 +27,6 @@ ok( ! TestRole->can('has') );
     __END_OF_ROLE__;
 }
 
-my $class = ( Any::Moose::moose_is_preferred() ) ? 'Moose' : 'Mouse' ;
+my $class = ( Tsukumo::Utils::is_moosed() ) ? 'Moose' : 'Mouse' ;
 
-ok( Any::Moose::is_class_loaded("${class}X::AttributeHelpers") );
+ok( exists $INC{"${class}X/AttributeHelpers.pm"} );

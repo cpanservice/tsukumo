@@ -28,6 +28,6 @@ ok( ! TestClass->can('has') );
     __END_OF_CLASS__;
 }
 
-my $class = ( Any::Moose::moose_is_preferred() ) ? 'Moose' : 'Mouse' ;
+my $class = ( Tsukumo::Utils::is_moosed() ) ? 'Moose' : 'Mouse' ;
 
 isa_ok( 'TestTypes', "${class}X::Types::Base" );
