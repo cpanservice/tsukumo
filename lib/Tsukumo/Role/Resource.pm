@@ -3,6 +3,7 @@ package Tsukumo::Role::Resource;
 use strict;
 use Tsukumo::Role;
 use Tsukumo::Types::Builtin qw( Any );
+use Tsukumo::Role::DateState;
 
 with qw( Tsukumo::Role::DateState );
 requires qw( load write type );

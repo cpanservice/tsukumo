@@ -66,22 +66,70 @@ has __time => (
 
 sub _build___time { return $_[0]->epoch }
 
-for my $property ( @properties ) {
-    my $is = ( $property eq 'dayweek' ) ? 'ro' : 'rw' ;
+has [ @properties ] => (
+    tirgger => sub {
+        $_[0]->clear_epoch;
+        $_[0]->clear_gmt;
+        $_[0]->_clear___time;
+    },
+);
 
-    has $property => (
-        is      => $is,
-        isa     => $isa{$property},
-        lazy    => 1,
-        clearer => "clear_${property}",
-        builder => "_build_${property}",
-        trigger => sub {
-            $_[0]->clear_epoch;
-            $_[0]->clear_gmt;
-            $_[0]->_clear___time;
-        },
-    );
-}
+has '+year' => (
+    is      => 'rw',
+    isa     => Year,
+    lazy    => 1,
+    clearer => 'clear_year',
+    builder => '_build_year',
+);
+
+has '+month' => (
+    is      => 'rw',
+    isa     => Month,
+    lazy    => 1,
+    clearer => 'clear_month',
+    builder => '_build_month',
+);
+
+has '+day' => (
+    is      => 'rw',
+    isa     => Day,
+    lazy    => 1,
+    clearer => 'clear_day',
+    builder => '_build_day',
+);
+
+has '+dayweek' => (
+    is      => 'ro',
+    isa     => DayWeek,
+    lazy    => 1,
+    clearer => 'clear_dayweek',
+    builder => '_build_dayweek',
+);
+
+has '+hour' => (
+    is      => 'rw',
+    isa     => Hour,
+    lazy    => 1,
+    clearer => 'clear_hour',
+    builder => '_build_hour',
+);
+
+has '+minute' => (
+    is      => 'rw',
+    isa     => Minute,
+    lazy    => 1,
+    clearer => 'clear_minute',
+    builder => '_build_minute',
+);
+
+has '+second' => (
+    is      => 'rw',
+    isa     => Second,
+    lazy    => 1,
+    clearer => 'clear_second',
+    builder => '_build_second',
+);
+
 
 sub _build_year     { $_[0]->__time->year   }
 sub _build_month    { $_[0]->__time->mon    }

@@ -6,6 +6,8 @@ use Tsukumo::Role (
     'X::Types::Path::Class' => [qw( File )],
 );
 use Path::Class::File;
+use Tsukumo::Role::Path;
+use Tsukumo::Role::DateState;
 
 with qw( Tsukumo::Role::Path Tsukumo::Role::DateState );
 
