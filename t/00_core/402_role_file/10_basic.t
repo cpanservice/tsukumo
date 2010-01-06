@@ -29,7 +29,7 @@ is( $file->fullpath, $pm->stringify );
 
 isa_ok( $file->file, 'Path::Class::File' );
 
-my $date = Tsukumo::Class::Date->new( $pm->stat->mtime );
+my $date = $file->file->stat->mtime;
 
-is_deeply( $file->created,      $date );
-is_deeply( $file->lastmodified, $date );
+is_deeply( $file->created->epoch,      $date );
+is_deeply( $file->lastmodified->epoch, $date );

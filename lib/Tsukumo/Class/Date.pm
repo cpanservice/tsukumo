@@ -1,33 +1,255 @@
 package Tsukumo::Class::Date;
 
 use strict;
-use warnings;
+use Tsukumo::Class;
+use Tsukumo::Types::Date qw( Epoch TimePiece Year Month Day DayWeek Hour Minute Second TZOffset );
 
-use parent qw( Time::Piece );
-
-use Tsukumo::Exceptions;
-use Date::Parse ();
 use Time::Local ();
+use Date::Parse ();
+
+my @properties = qw( year month day dayweek hour minute second );
+my %isa = (
+    year    => Year,
+    month   => Month,
+    day     => Day,
+    dayweek => DayWeek,
+    hour    => Hour,
+    minute  => Minute,
+    second  => Second,
+);
+
+has epoch => (
+    is          => 'rw',
+    isa         => Epoch,
+    required    => 1,
+    lazy        => 1,
+    clearer     => 'clear_epoch',
+    builder     => '_build_epoch',
+    trigger     => sub {
+        for my $property ( @properties ) {
+            my $method = "clear_${property}";
+            $_[0]->$method();
+        }
+        $_[0]->_clear___time;
+        $_[0]->clear_gmt;
+    },
+);
+
+sub _build_epoch {
+    my ( $self ) = @_;
+
+    if ( ! grep { exists $self->{$_} } @properties ) {
+        return time;
+    }
+
+    my ( $year, $month, $day, $hour, $minute, $second )
+        = @{ $self }{qw( year month day hour minute second )};
+
+    $year   ||= Time::Piece->gmtime->year;
+    $month  ||= 1;
+    $day    ||= 1;
+    $hour   ||= 0;
+    $minute ||= 0;
+    $second ||= 0;
+
+    return Time::Local::timegm( $second, $minute, $hour, $day, ( $month - 1 ), ( $year - 1900 ) );
+}
+
+has __time => (
+    is      => 'ro',
+    isa     => TimePiece,
+    coerce  => 1,
+    lazy    => 1,
+    clearer => '_clear___time',
+    builder => '_build___time',
+);
+
+sub _build___time { return $_[0]->epoch }
+
+for my $property ( @properties ) {
+    my $is = ( $property eq 'dayweek' ) ? 'ro' : 'rw' ;
+
+    has $property => (
+        is      => $is,
+        isa     => $isa{$property},
+        lazy    => 1,
+        clearer => "clear_${property}",
+        builder => "_build_${property}",
+        trigger => sub {
+            $_[0]->clear_epoch;
+            $_[0]->clear_gmt;
+            $_[0]->_clear___time;
+        },
+    );
+}
+
+sub _build_year     { $_[0]->__time->year   }
+sub _build_month    { $_[0]->__time->mon    }
+sub _build_day      { $_[0]->__time->mday   }
+sub _build_dayweek  { $_[0]->__time->wday   }
+sub _build_hour     { $_[0]->__time->hour   }
+sub _build_minute   { $_[0]->__time->minute }
+sub _build_second   { $_[0]->__time->second }
+
+has tzoffset => (
+    is      => 'rw',
+    isa     => TZOffset,
+    coerce  => 1,
+    lazy    => 1,
+    builder => '_build_tzoffset',
+);
+
+sub _build_tzoffset { my $now = time; Time::Local::timegm(localtime($now)) - Time::Local::timegm(gmtime($now)) }
+
+has gmt => (
+    is      => 'ro',
+    isa     => __PACKAGE__,
+    lazy    => 1,
+    clearer => 'clear_gmt',
+    builder => '_build_gmt',
+);
+
+sub _build_gmt {
+    my ( $self ) = @_;
+    return __PACKAGE__->new(
+        epoch       => $self->epoch + $self->tzoffset,
+        tzoffset    => 0,
+    );
+}
+
+sub parse_dwim {
+    my ( $class, $date ) = @_;
+
+    my ( $sec, $min, $hr, $da, $mo, $yr, $zone ) = Date::Parse::strptime($date);
+
+    return $class->new(
+        year        => $yr + 1900,
+        month       => $mo + 1,
+        day         => $da,
+        hour        => $hr,
+        minute      => $min,
+        second      => $sec,
+        tzoffset    => $zone,
+    );
+}
+
+sub now { $_[0]->new( epoch => time ) }
+
+sub clone {
+    my ( $self, %args ) = @_;
+
+    $args{'year'}       ||= $self->year;
+    $args{'month'}      ||= $self->month;
+    $args{'day'}        ||= $self->day;
+    $args{'hour'}       ||= $self->hour;
+    $args{'minute'}     ||= $self->minute;
+    $args{'second'}     ||= $self->second;
+    $args{'tzoffset'}   ||= $self->tzoffset;
+
+    return $self->new( %args );
+}
 
 sub w3cdtf {
-    my $self = shift;
+    my ( $self ) = @_;
 
-    my $date    = $self->datetime;
+    my $ymd     = $self->ymd('-');
+    my $time    = $self->time(':');
     my $offset  = $self->tzoffset;
-    my $tz;
 
+    my $tz;
     if ( $offset == 0 ) {
-        $tz = 'Z'
+        $tz = 'Z';
     }
     else {
         my $pm  = ( $offset > 0 ) ? '+' : '-';
         my $hr  = int( $offset / ( 60 * 60 ) );
         my $min = ( $offset - ( $hr * 60 * 60 ) ) / 60;
+           $tz  = "${pm}" . sprintf('%02d', $hr) . ':' . sprintf('%02d', $min);
+    }
 
-        $tz = "${pm}" . sprintf('%02d', $hr) . ':' . sprintf('%02d', $min);
+    return "${ymd}T${time}${tz}";
+}
+
+sub ymd {
+    my ( $self, $sep ) = @_;
+    $sep = q{-} if ( ! defined $sep );
+
+    my $year    = $self->year;
+    my $month   = sprintf('%02d', $self->month);
+    my $day     = sprintf('%02d', $self->day);
+
+    return join $sep, ( $year, $month, $day );
+}
+
+sub time {
+    my ( $self, $sep ) = @_;
+    $sep = q{:} if ( ! defined $sep );
+
+    my $hour   = sprintf('%02d', $self->hour);
+    my $minute = sprintf('%02d', $self->minute);
+    my $second = sprintf('%02d', $self->second);
+
+    return join $sep, ( $hour, $minute, $second );
+}
+
+__END_OF_CLASS__;
+
+
+__END__
+
+=pod
+
+sub w3cdtf {
+    my ( $self ) = @_;
+
+    my $date    = $self->datetime;
+    my $offset  = $self->tzoffset;
+
+    my $tz;
+    if ( $offset == 0 ) {
+        $tz = 'Z';
+    }
+    else {
+        my $pm  = ( $offset > 0 ) ? '+' : '-';
+        my $hr  = int( $offset / ( 60 * 60 ) );
+        my $min = ( $offset - ( $hr * 60 * 60 ) ) / 60;
+           $tz  = "${pm}" . sprintf('%02d', $hr) . ':' . sprintf('%02d', $min);
     }
 
     return "${date}${tz}";
+}
+
+sub datetime {
+    my ( $self ) = @_;
+
+    my $ymd     = $self->ymd('-');
+    my $time    = $self->time(':');
+
+    return "${ymd}T${time}";
+}
+
+sub ymd {
+    my $self = shift;
+    my $sep  = shift;
+       $sep  = q{-} if ( ! defined $sep );
+
+    return join $sep, ( $self->year, $self->month, $self->day );
+}
+
+sub time {
+    my $self = shift;
+    my $sep  = shift;
+       $sep  = q{:} if ( ! defined $sep );
+
+    return join $sep, ( $self->hour, $self->minute, $self->second );
+}
+
+sub parse_dwim {
+    my ( $class, $str ) = @_;
+
+    my ()
+        = 
+
 }
 
 sub parse_dwim {

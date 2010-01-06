@@ -2,13 +2,13 @@ package Tsukumo::Role::DateState;
 
 use strict;
 use Tsukumo::Role;
-use Tsukumo::Types qw( Date );
+use Tsukumo::Types qw( DateTime );
 
 requires qw( datestat );
 
 has created => (
     is      => 'rw',
-    isa     => Date,
+    isa     => DateTime,
     coerce  => 1,
     builder => '_build_created',
     clearer => 'clear_created',
@@ -17,7 +17,7 @@ has created => (
 
 has lastmodified => (
     is      => 'rw',
-    isa     => Date,
+    isa     => DateTime,
     coerce  => 1,
     builder => '_build_lastmodified',
     clearer => 'clear_lastmodified',

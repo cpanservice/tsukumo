@@ -40,11 +40,6 @@ my $res = MyResource->new();
 is( $res->type, 'MyResource' );
 is( $res->data, 'foo' );
 $res->write;
-is_deeply(
-    [ $res->created ],
-    [ Tsukumo::Class::Date->new($time) ],
-);
-is_deeply(
-    [ $res->lastmodified ],
-    [ Tsukumo::Class::Date->new($time) ],
-);
+
+is( $res->created->epoch, $time );
+is( $res->lastmodified->epoch, $time );
