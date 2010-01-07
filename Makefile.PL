@@ -5,9 +5,11 @@ all_from 'lib/Tsukumo.pm';
 # core modules
 requires 'Mouse'        => 0.45;
 requires 'parent';
+requires 'constant';
 
 # Tsukumo::Utils
 requires 'Expoter::Lite';
+requires 'File::Spec::Unix';
 
 # Tsukumo::Exceptions
 requires 'Exception::Class';
@@ -22,6 +24,9 @@ requires 'Hash::Merge::Simple';
 
 # Tsukumo::Class::Date
 requires 'Time::Piece';
+requires 'Time::Local';
+requires 'Date::Parse';
+
 
 # Tsukumo::Types
 requires 'MouseX::Types';
