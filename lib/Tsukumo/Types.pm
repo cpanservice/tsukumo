@@ -5,11 +5,13 @@ use Tsukumo::Class (
     'X::Types'  => [ -declare => [qw(
         FilePath FileName FileExtension
         DateTime
+        Config
     )] ]
 );
 use Tsukumo::Types::Builtin qw( Str Int ArrayRef HashRef Object );
 use Tsukumo::Utils qw( rel2abs );
 use Tsukumo::Class::Date;
+use Tsukumo::Config;
 
 use File::Spec::Unix;
 
@@ -63,7 +65,7 @@ coerce FileExtension,
 subtype DateTime,
     as Object,
     where { $_->isa('Tsukumo::Class::Date') },
-    message { "Objecy is not Tsukumo::Class::Date object: ${_}" }
+    message { "Object is not Tsukumo::Class::Date object: ${_}" }
 ;
 
 coerce DateTime,
@@ -76,6 +78,19 @@ coerce DateTime,
     from HashRef,
         via { Tsukumo::Class::Date->new( %{ $_ } ) },
 ;
+
+# Config
+subtype Config,
+    as Object,
+    where { $_->isa('Tsukumo::Config') },
+    message { "Object is not Tsukumo::Config object." }
+;
+
+coerce Config,
+    from HashRef,
+        via { Tsukumo::Config->new( $_ ) }
+;
+
 
 __END_OF_CLASS__;
 
