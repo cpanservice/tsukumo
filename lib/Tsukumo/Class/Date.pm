@@ -67,7 +67,7 @@ has __time => (
 sub _build___time { return $_[0]->epoch }
 
 has [ @properties ] => (
-    tirgger => sub {
+    trigger => sub {
         $_[0]->clear_epoch;
         $_[0]->clear_gmt;
         $_[0]->_clear___time;
