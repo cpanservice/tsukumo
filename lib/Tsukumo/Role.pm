@@ -2,7 +2,6 @@ package Tsukumo::Role;
 
 use strict;
 use warnings;
-use utf8;
 
 use Tsukumo::Utils ();
 
@@ -76,7 +75,6 @@ sub import {
 
     strict->import;
     warnings->import;
-    utf8->import;
 
     init_role($caller);
 
