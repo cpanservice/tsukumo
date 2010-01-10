@@ -22,6 +22,11 @@ BEGIN {
             fields      => [qw( requires )],
             description => 'Required argument parameter is missing.',
         },
+        'Tsukumo::Exception::EvaluateCodeFailed'        => {
+            isa         => 'Tsukumo::Exception',
+            alias       => 'evaluate_code_failed',
+            description => 'Evaluate perl code is failed.',
+        },
     );
 }
 
@@ -74,6 +79,12 @@ This class is some exception classes for Tsukumo.
     use Tsukumo::Exceptions qw( argument_parameter_missing );
     
     argument_parameter_mission error => $message, requires => $requires_parameter.
+
+=head2 C<Tsukumo::Exception::EvaluateCodeFailed>
+
+    use Tsukumo::Exceptions qw( evaluate_code_failed );
+    
+    evaluate_code_filed error => $message;
 
 =head1 AUTHOR
 
