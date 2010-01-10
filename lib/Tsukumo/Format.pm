@@ -23,6 +23,8 @@ sub new {
         $module = $class . q{::} . $format;
     }
 
+    load_class($module);
+
     my $instance;
     my $is_cached = 0;
     if ( exists $CACHE{$module} ) {
