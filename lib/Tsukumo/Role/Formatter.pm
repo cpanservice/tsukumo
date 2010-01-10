@@ -41,11 +41,19 @@ This role is requirements of formatter interface.
 
 =head2 C<name>
 
+    sub name { 'Perl' }
+
 This method is returned formatter name.
+
+The value of this method returns has to be scalar.
 
 =head2 C<extensions>
 
+    sub extensions { [qw( pl perl )] }
+
 This method is returned file extensions for formatter support format.
+
+The value of this method returns has to be ARRAY reference.
 
 =head2 C<parse>
 
