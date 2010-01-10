@@ -8,17 +8,18 @@ use base qw( Exporter::Lite );
 use Path::Class;
 use FindBin ();
 
-our ( $basedir );
+our ( $basedir, $examples );
 
 our @EXPORT_OK = qw(
-    $basedir
+    $basedir $examples tempdir
 );
 
 {
     my @path = dir($FindBin::Bin)->dir_list;
     while ( my $dir = pop @path ) {
         if ( $dir eq 't' ) {
-            $basedir = dir(@path);
+            $basedir    = dir(@path);
+            $examples   = $basedir->subdir('t/examples'),
         }
     }
 }

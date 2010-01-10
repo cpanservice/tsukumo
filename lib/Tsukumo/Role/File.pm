@@ -2,38 +2,57 @@ package Tsukumo::Role::File;
 
 use strict;
 use Tsukumo::Role;
-use Tsukumo::Role (
-    'X::Types::Path::Class' => [qw( File )],
-);
-use Path::Class::File;
+use IO::File ();
+use File::stat ();
+
 use Tsukumo::Role::Path;
 use Tsukumo::Role::DateState;
-
 with qw( Tsukumo::Role::Path Tsukumo::Role::DateState );
 
-has file => (
-    is      => 'ro',
-    isa     => File,
-    coerce  => 1,
-    lazy    => 1,
-    clearer => 'clear_file',
-    builder => 'setup_file',
-);
+sub open {
+    my ( $self, @args ) = @_;
+    return IO::File->new( $self->fullpath, @args );
+}
 
-sub setup_file { $_[0]->fullpath }
+sub openr {
+    my ( $self, @args ) = @_;
+    return $self->open('r', @args);
+}
+
+sub openw {
+    my ( $self, @args ) = @_;
+    return $self->open('w', @args);
+}
+
+sub slurp {
+    my ( $self, %args ) = @_;
+    my $fh = $self->openr;
+
+    if ( $args{'chomped'} || $args{'chomp'} ) {
+        chomp( my @data = <$fh> );
+        return wantarray ? @data : join q{}, @data;
+    }
+
+    local $/ if ( ! wantarray );
+    return <$fh>;
+}
 
 sub datestat {
     my ( $self ) = @_;
 
-    my $stat = $self->file->stat;
+    my $stat = File::stat::stat($self->fullpath);
     my $time;
-       $time = $stat->mtime;
+       $time = $stat->mtime if ( ref $stat );
        $time = time if ( ! defined $time );
 
     return {
         created         => $time,
         lastmodified    => $time,
     };
+}
+
+sub filestat {
+    return File::stat::stat( $_[0]->fullpath );
 }
 
 __END_OF_ROLE__;
@@ -63,17 +82,29 @@ This role mixes with L<Tsukumo::Role::Path> and L<Tsukumo::Role::DateState>.
 
 none
 
-=head1 PROPERTIES
-
-=head2 C<file>
-
-This property retruns L<Path::Class::File> object.
-
 =head1 METHODS
 
-=head2 C<setup_file>
+=head2 C<open>
+
+    my $fh = $file->open( @IO_FILE_CONSTRUCTOR_ARGS );
+
+This method retruns L<IO::Handle> object.
+
+=head2 C<openr>
+
+    my $fh = $file->openr; # same as $file->open('r', @args);
+
+=head2 C<openw>
+
+    my $fh = $file->openw; # same as $file->open('w', @args);
+
+=head2 C<filestat>
+
+This method retruns L<File::stat::stat> results.
 
 =head2 C<datestat>
+
+This method retruns datetime stat.
 
 =head1 AUTHOR
 

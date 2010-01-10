@@ -28,6 +28,9 @@ requires 'Time::Piece';
 requires 'Time::Local';
 requires 'Date::Parse';
 
+# Tsukumo::Role::File
+requires 'File::stat';
+requires 'IO::File';
 
 # Tsukumo::Types
 requires 'MouseX::Types';
@@ -37,6 +40,9 @@ tests 't/*/*/*.t';
 author_tests 'xt';
 
 test_requires 'Test::More';
+
+build_requires 'Path::Class';
+build_requires 'FindBin';
 
 auto_include;
 auto_install;

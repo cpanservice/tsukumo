@@ -3,10 +3,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
-use t::Util qw( $basedir );
-use Path::Class::File;
+use Test::More tests => 8;
+use t::Util qw( $basedir $examples );
 use Tsukumo::Class::Date;
+use File::Temp qw( tempfile );
 
 {
     package MyFile;
@@ -27,9 +27,16 @@ is( $file->filename, 'Tsukumo' );
 is( $file->file_extension, 'pm' );
 is( $file->fullpath, $pm->stringify );
 
-isa_ok( $file->file, 'Path::Class::File' );
-
-my $date = $file->file->stat->mtime;
+my $date = $pm->stat->mtime;
 
 is_deeply( $file->created->epoch,      $date );
 is_deeply( $file->lastmodified->epoch, $date );
+
+is_deeply(
+    $file->filestat,
+    $pm->stat,
+);
+
+$file = MyFile->new( fullpath => $examples->file('core/role_file/foo.txt')->stringify );
+
+is( $file->slurp, 'foo' );
