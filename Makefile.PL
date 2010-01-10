@@ -10,6 +10,7 @@ requires 'constant';
 # Tsukumo::Utils
 requires 'Expoter::Lite';
 requires 'File::Spec::Unix';
+requires 'Class::Load';
 
 # Tsukumo::Exceptions
 requires 'Exception::Class';

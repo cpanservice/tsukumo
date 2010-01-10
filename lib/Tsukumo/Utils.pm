@@ -6,6 +6,7 @@ use warnings;
 use parent qw( Exporter::Lite );
 use File::Spec::Unix;
 use Tsukumo::Exceptions;
+use Class::Load qw( load_class is_class_loaded );
 
 our $is_moosed;
 
@@ -25,7 +26,7 @@ BEGIN {
 };
 
 our @EXPORT_OK = qw(
-    env_value rel2abs load_class any_moose is_moosed
+    env_value rel2abs load_class is_class_loaded any_moose is_moosed
 );
 
 sub env_value {
@@ -52,15 +53,6 @@ sub rel2abs {
        $path    = "${path}/"    if ( $is_dir );
        $path    =~ s{/+}{/};
     return $path;
-}
-
-sub load_class {
-    my ( $class ) = @_;
-
-    $class =~ s{::}{/}g;
-    $class = "${class}.pm";
-
-    require $class;
 }
 
 my %ClassCache = ();
@@ -139,6 +131,18 @@ if this function is returned true, class builder is Moose.
     my $metaclass   = any_moose('::Meta::Class');
 
 This function is geneator of (Moose|Mouse) class names.
+
+=head2 C<load_class>
+
+    load_class('Class::Name')
+
+This method is module loader.
+
+=head2 C<is_class_loaded>
+
+    my $loaded = is_class_loaded('Class::Name')
+
+Tis method checks class is loaded.
 
 =head1 AUTHOR
 
