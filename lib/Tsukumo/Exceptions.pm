@@ -65,9 +65,15 @@ This class is some exception classes for Tsukumo.
 
 =head2 C<Tsukumo::Exception::InvalidArgumentError>
 
+    use Tsukumo::Exceptions qw( invalid_argument_error );
+
     invalid_argument_error error => $message;
 
-basic exceptions.
+=head2 C<Tsukumo::Exception::ArgumentParameterMissing>
+
+    use Tsukumo::Exceptions qw( argument_parameter_missing );
+    
+    argument_parameter_mission error => $message, requires => $requires_parameter.
 
 =head1 AUTHOR
 
