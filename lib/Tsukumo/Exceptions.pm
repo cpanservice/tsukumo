@@ -8,13 +8,19 @@ use parent qw( Exporter::Lite );
 my %E;
 BEGIN {
     %E = (
-        'Tsukumo::Exception'                        => {
+        'Tsukumo::Exception'                            => {
             decription  => 'Basic exception for Tsukumo',
         },
-        'Tsukumo::Exception::InvalidArgumentError' => {
+        'Tsukumo::Exception::InvalidArgumentError'      => {
             isa         => 'Tsukumo::Exception',
             alias       => 'invalid_argument_error',
             description => 'Argument is not valid',
+        },
+        'Tsukumo::Exception::ArgumentParameterMissing'  => {
+            isa         => 'Tsukumo::Exception',
+            alias       => 'argument_parameter_missing',
+            fields      => [qw( requires )],
+            description => 'Required argument parameter is missing.',
         },
     );
 }
