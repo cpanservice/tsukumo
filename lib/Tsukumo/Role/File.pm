@@ -98,6 +98,15 @@ This method retruns L<IO::Handle> object.
 
     my $fh = $file->openw; # same as $file->open('w', @args);
 
+=head2 C<slurp>
+
+    my $data = $file->slurp;
+    my $data = $file->slurp( chomp => 1 );
+    
+    my @data = $file->slurp;
+
+This method returns file content.
+
 =head2 C<filestat>
 
 This method retruns L<File::stat::stat> results.
