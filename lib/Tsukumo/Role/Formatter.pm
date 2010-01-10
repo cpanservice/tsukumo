@@ -43,7 +43,7 @@ This role is requirements of formatter interface.
 
     sub name { 'Perl' }
 
-This method is returned formatter name.
+This method returns formatter name.
 
 The value of this method returns has to be scalar.
 

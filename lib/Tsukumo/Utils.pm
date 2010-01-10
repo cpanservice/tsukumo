@@ -127,7 +127,7 @@ This function is logical cleanup of a argument path.
     
     my $mode = ( is_moosed() ) ? 'Moose' : 'Mouse' ;
 
-This function is returned Moose mode or Mouse mode.
+This function retruns Moose mode or Mouse mode.
 
 if this function is returned true, class builder is Moose.
 

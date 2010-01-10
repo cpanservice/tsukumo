@@ -67,7 +67,7 @@ none
 
 =head2 C<file>
 
-This property is returned L<Path::Class::File> object.
+This property retruns L<Path::Class::File> object.
 
 =head1 METHODS
 

@@ -70,7 +70,7 @@ This method is write to resource source.
 
 =head2 C<type>
 
-This method is returned resource type.
+This method returns resource type.
 
 =head2 C<datestat>
 
