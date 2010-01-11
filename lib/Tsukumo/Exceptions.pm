@@ -22,6 +22,12 @@ BEGIN {
             fields      => [qw( requires )],
             description => 'Required argument parameter is missing.',
         },
+        'Tsukumo::Exception::RequiredModuleMissing'     => {
+            is          => 'Tsukumo::Exception',
+            alias       => 'required_module_missing',
+            fields      => [qw( requires )],
+            description => 'Required perl module is missing',
+        },
         'Tsukumo::Exception::EvaluateCodeFailed'        => {
             isa         => 'Tsukumo::Exception',
             alias       => 'evaluate_code_failed',
@@ -78,7 +84,13 @@ This class is some exception classes for Tsukumo.
 
     use Tsukumo::Exceptions qw( argument_parameter_missing );
     
-    argument_parameter_mission error => $message, requires => $requires_parameter.
+    argument_parameter_mission error => $message, requires => $requires_parameter;
+
+=head2 C<Tsukumo::Exception::RequiredModuleMissing>
+
+    use Tsukumo::Exceptions qw( required_module_missing );
+    
+    requires_module_missing error => $message, requires => [@required_modules];
 
 =head2 C<Tsukumo::Exception::EvaluateCodeFailed>
 
