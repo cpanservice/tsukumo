@@ -51,4 +51,49 @@ sub format {
 }
 
 __END_OF_CLASS__;
-1;
+
+=head1 NAME
+
+Tsukumo::Format::Perl - Parse/Format Perl.
+
+=head1 SYNPOSIS
+
+    my $format = Tsukumo::Format->new(
+        format => 'Perl',
+    );
+    
+    my $var = $format->parse( $source );
+    my $code = $format->format( $var );
+
+=head1 DESCRIPTION
+
+This class is parsing/formatting perl code.
+
+=head1 CONSTRUCTOR ARGUMENTS
+
+=head2 C<dumper_options>
+
+    my $format = Tsukumo::Format->new(
+        format          => 'Perl',
+        dumper_options  => {
+            Deparse => 1,
+            Useqq   => 1,
+        },
+    );
+
+This argument specifies the option of L<Data::Dumper>. 
+
+=head1 AUTHOR
+
+Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
+
+=head1 SEE ALSO
+
+L<Tsukumo::Format>, L<Data::Dumper>,
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
