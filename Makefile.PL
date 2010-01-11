@@ -2,47 +2,62 @@ use inc::Module::Install;
 name 'Tsukumo';
 all_from 'lib/Tsukumo.pm';
 
-# core modules
-requires 'Mouse'        => 0.45;
+## -- required by core modules ------ ##
+
+## OO
+
+# Tsukumo::Class, Tsukumo::Role, Tsukumo::Types, Tsukumo::Types::Builtin
+requires 'Mouse' => 0.45;
+requires 'MouseX::Types';
 requires 'parent';
 requires 'constant';
 
-# Tsukumo::Utils
-requires 'Expoter::Lite';
-requires 'File::Spec::Unix';
+## class utility
+
+# Tsukumo::Class::Hookable, Tsukumo::Exceptions, Tsukumo::Utils
+requires 'Class::Hookable' => 0.08;
+requires 'Exception::Class';
+requires 'Exporter::Lite';
 requires 'Class::Load';
 
-# Tsukumo::Exceptions
-requires 'Exception::Class';
+## variable utility
 
-# Tsukumo::Class::Hookable
-requires 'Class::Hookable';
-
-# Tsukumo::Class::Variables
+# Tsukumo::Class::Variables,
 requires 'Scalar::Util';
 requires 'Encode';
 requires 'Hash::Merge::Simple';
 
-# Tsukumo::Class::Date
-requires 'Time::Piece';
+# Tsukumo::Format
+requires 'Struct::Compare';
+
+# Tsukumo::Format::Perl
+requires 'Data::Dumper';
+
+##  datetime
+
+# Tsukumo::Class::Date, Tsukumo::Types::Date
 requires 'Time::Local';
 requires 'Date::Parse';
+requires 'Time::Piece';
 
-# Tsukumo::Role::File
-requires 'File::stat';
-requires 'IO::File';
+## path
 
-# Tsukumo::Types
-requires 'MouseX::Types';
-requires 'MouseX::Types::Mouse';
+# Tsukumo::Utils, Tsukumo::Types ( FilePath, FileName, FileExtension )
+requires 'File::Spec::Unix';
+
+## -- required by test files -------- ##
+
+# core requires
+test_requires 'Test::More';
+
+# t::Utils
+test_requires 'Path::Class';
+test_requires 'FindBin';
+
+## ---------------------------------- ##
 
 tests 't/*/*/*.t';
 author_tests 'xt';
-
-test_requires 'Test::More';
-
-build_requires 'Path::Class';
-build_requires 'FindBin';
 
 auto_include;
 auto_install;
