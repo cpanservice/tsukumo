@@ -8,15 +8,6 @@ use Time::Local ();
 use Date::Parse ();
 
 my @properties = qw( year month day dayweek hour minute second );
-my %isa = (
-    year    => Year,
-    month   => Month,
-    day     => Day,
-    dayweek => DayWeek,
-    hour    => Hour,
-    minute  => Minute,
-    second  => Second,
-);
 
 has epoch => (
     is          => 'rw',
