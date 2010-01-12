@@ -33,6 +33,12 @@ BEGIN {
             alias       => 'evaluate_code_failed',
             description => 'Evaluate perl code is failed.',
         },
+        'Tsukumo::Exception::FileIOError'               => {
+            isa         => 'Tsukumo::Exception',
+            alias       => 'file_io_error',
+            fields      => [qw( path action )],
+            description => 'File IO error.',
+        },
     );
 }
 
@@ -97,6 +103,12 @@ This class is some exception classes for Tsukumo.
     use Tsukumo::Exceptions qw( evaluate_code_failed );
     
     evaluate_code_filed error => $message;
+
+=head2 C<Tsukumo::Exception::FileIOError>
+
+    use Tsukumo::Exceptions qw( file_io_error );
+    
+    file_io_error error => $message, path => $filepath, action => 'open';
 
 =head1 AUTHOR
 
