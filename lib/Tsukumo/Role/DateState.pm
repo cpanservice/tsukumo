@@ -27,8 +27,17 @@ has lastmodified => (
 sub _build_created      { return $_[0]->datestat->{'created'}       }
 sub _build_lastmodified { return $_[0]->datestat->{'lastmodified'}  }
 
-sub update_created      { $_[0]->clear_created;         $_[0]->created          }
-sub update_lastmodified { $_[0]->clear_lastmodified;    $_[0]->lastmodified     }
+sub update_created      { $_[0]->created(       $_[0]->_build_created       ) }
+sub update_lastmodified { $_[0]->lastmodified(  $_[0]->_build_lastmodified  ) }
+
+sub is_modified {
+    my ( $self ) = @_;
+
+    my $lastmod = $self->lastmodified;
+    my $latest  = DateTime->coerce( $self->_build_lastmodified );
+
+    return $lastmod->epoch != $latest->epoch;
+}
 
 __END_OF_ROLE__;
 
@@ -84,6 +93,20 @@ C<created> and C<lastmodified> of the hash reference are used.
 Property C<created> and C<lastmodified> are coercion of C<Tsukumo::Types::Date>.
 
 Please see C<Tsukumo::Types::Date> code.
+
+=head1 METHODS
+
+=head2 C<is_modified>
+
+This method returns true if lastmodified property is not equal latest modified time.
+
+=head2 C<update_created>
+
+This method rebuilds C<creatd> property.
+
+=head2 C<update_lastmodified>
+
+This method rebuilds C<lastmodified> property.
 
 =head1 PROPERTIES
 
