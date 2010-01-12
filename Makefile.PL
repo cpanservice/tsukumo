@@ -33,6 +33,9 @@ requires 'Struct::Compare';
 # Tsukumo::Format::Perl
 requires 'Data::Dumper';
 
+# Tsukumo::Format::YAML
+requires 'YAML';
+
 ##  datetime
 
 # Tsukumo::Class::Date, Tsukumo::Types::Date
@@ -40,10 +43,14 @@ requires 'Time::Local';
 requires 'Date::Parse';
 requires 'Time::Piece';
 
-## path
+## path, filesys
 
 # Tsukumo::Utils, Tsukumo::Types ( FilePath, FileName, FileExtension )
 requires 'File::Spec::Unix';
+
+# Tsukumo::Role::File
+requires 'IO::File';
+requires 'File::stat';
 
 ## -- required by test files -------- ##
 
