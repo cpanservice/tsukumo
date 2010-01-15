@@ -54,7 +54,15 @@ sub install_end_of_role {
     *{"${target}::__END_OF_ROLE__"} = sub {
         my $caller = caller(0);
         end_of_role($caller, $unimport, @_);
+        uninstall_end_of_role($target);
     };
+}
+
+sub uninstall_end_of_role {
+    my ( $target ) = @_;
+
+    no strict 'refs';
+    delete ${"${target}::"}{'__END_OF_ROLE__'};
 }
 
 

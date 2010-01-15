@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 {
     package TestRole;
@@ -14,9 +14,10 @@ use Test::More tests => 3;
     __END_OF_ROLE__;
 }
 
-can_ok( 'TestRole', qw( meta __END_OF_ROLE__ ) );
+can_ok( 'TestRole', qw( meta ) );
 
 ok( ! TestRole->can('has') );
+ok( ! TestRole->can('__END_OF_ROLE__') );
 
 {
     package TestRoleWithModule;
