@@ -41,5 +41,7 @@ is( $res->type, 'MyResource' );
 is( $res->data, 'foo' );
 $res->write;
 
+$res->reload;
+
 is( $res->created->epoch, $time );
 is( $res->lastmodified->epoch, $time );

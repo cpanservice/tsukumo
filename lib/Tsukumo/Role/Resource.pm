@@ -16,6 +16,11 @@ has data => (
     builder => 'load',
 );
 
+sub reload {
+    my ( $self ) = @_;
+    $self->data( $self->load );
+}
+
 __END_OF_ROLE__;
 
 =head1 NAME
@@ -63,6 +68,10 @@ This role mixed L<Tsukumo::Role::DateState>.
 =head2 C<load>
 
 This method is builder method for C<data>.
+
+=head2 C<reload>
+
+This method reloads resource data.
 
 =head2 C<write>
 
