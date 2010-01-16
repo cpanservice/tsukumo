@@ -15,7 +15,6 @@ with qw( Tsukumo::Role::File Tsukumo::Role::Resource );
 has formatter => (
     is          => 'ro',
     isa         => Formatter,
-    does        => 'Tsukumo::Role::Formatter',
     coerce      => 1,
     required    => 1,
     init_arg    => 'format',

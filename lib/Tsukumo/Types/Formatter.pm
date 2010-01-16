@@ -7,9 +7,10 @@ use Tsukumo::Class 'X::Types' => [ -declare => [qw(
 )] ];
 use Tsukumo::Types::Builtin qw( Object Str ArrayRef HashRef );
 use Tsukumo::Format;
+use Tsukumo::Role::Formatter;
 
 subtype Formatter,
-    as Object,
+    as 'Tsukumo::Role::Formatter',
 ;
 
 coerce Formatter,
@@ -22,7 +23,7 @@ coerce Formatter,
 ;
 
 subtype PerlFormatter,
-    as Object,
+    as 'Tsukumo::Role::Formatter',
 ;
 
 coerce PerlFormatter,
@@ -33,7 +34,7 @@ coerce PerlFormatter,
 ;
 
 subtype YAMLFormatter,
-    as Object,
+    as 'Tsukumo::Role::Formatter',
 ;
 
 coerce YAMLFormatter,
@@ -44,7 +45,7 @@ coerce YAMLFormatter,
 ;
 
 subtype PlainTextFormatter,
-    as Object,
+    as 'Tsukumo::Role::Formatter',
 ;
 
 coerce PlainTextFormatter,
