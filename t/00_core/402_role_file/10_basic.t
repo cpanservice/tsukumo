@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 9;
 use t::Util qw( $basedir $examples );
 use Tsukumo::Class::Date;
 use File::Temp qw( tempfile );
@@ -39,4 +39,13 @@ is_deeply(
 
 $file = MyFile->new( fullpath => $examples->file('core/role_file/foo.txt')->stringify );
 
-is( $file->slurp, 'foo' );
+my $data = $file->slurp;
+my @data = $file->slurp( chomp => 1 );
+
+is( $data, <<'__FILE__');
+foo
+bar
+baz
+__FILE__
+
+is_deeply( [ @data ], [qw( foo bar baz )] );

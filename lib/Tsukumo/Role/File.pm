@@ -2,8 +2,10 @@ package Tsukumo::Role::File;
 
 use strict;
 use Tsukumo::Role;
-use IO::File ();
-use File::stat ();
+
+use Coro::Handle ();
+use IO::File;
+use File::stat;
 
 use Tsukumo::Role::Path;
 use Tsukumo::Role::DateState;
@@ -11,7 +13,11 @@ with qw( Tsukumo::Role::Path Tsukumo::Role::DateState );
 
 sub open {
     my ( $self, @args ) = @_;
-    return IO::File->new( $self->fullpath, @args );
+
+    my $fh = IO::File->new( $self->fullpath, @args );
+       $fh = Coro::Handle::unblock $fh;
+
+    return $fh;
 }
 
 sub openr {
@@ -28,19 +34,22 @@ sub slurp {
     my ( $self, %args ) = @_;
     my $fh = $self->openr;
 
-    if ( $args{'chomped'} || $args{'chomp'} ) {
-        chomp( my @data = <$fh> );
-        return wantarray ? @data : join q{}, @data;
+    my @data;
+    while ( my $line = $fh->readline ) {
+        push @data, $line;
     }
 
-    local $/ if ( ! wantarray );
-    return <$fh>;
+    if ( $args{'chomped'} || $args{'chomp'} ) {
+        chomp @data;
+    }
+
+    return wantarray ? @data : join q{}, @data ;
 }
 
 sub datestat {
     my ( $self ) = @_;
 
-    my $stat = File::stat::stat($self->fullpath);
+    my $stat = $self->filestat;
     my $time;
        $time = $stat->mtime if ( ref $stat );
        $time = time if ( ! defined $time );
@@ -88,7 +97,9 @@ none
 
     my $fh = $file->open( @IO_FILE_CONSTRUCTOR_ARGS );
 
-This method retruns L<IO::Handle> object.
+This method retruns unblocking file handle.
+
+See also L<Coro::Handle>.
 
 =head2 C<openr>
 
@@ -104,6 +115,7 @@ This method retruns L<IO::Handle> object.
     my $data = $file->slurp( chomp => 1 );
     
     my @data = $file->slurp;
+    my @data = $file->slurp( chomped => 1 );
 
 This method returns file content.
 
@@ -123,7 +135,7 @@ Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
 
 L<Tsukumo::Role::Path>, L<Tsukumo::Role::DateState>,
 
-L<Path::Class::File>,
+L<Coro::Handle>,
 
 =head1 LICENSE
 
