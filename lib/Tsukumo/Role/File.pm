@@ -2,32 +2,43 @@ package Tsukumo::Role::File;
 
 use strict;
 use Tsukumo::Role;
-
+use Tsukumo::Exceptions;
 use Coro::Handle ();
-use IO::File;
-use File::stat;
+use File::stat ();
 
 use Tsukumo::Role::Path;
 use Tsukumo::Role::DateState;
 with qw( Tsukumo::Role::Path Tsukumo::Role::DateState );
 
 sub open {
-    my ( $self, @args ) = @_;
+    my ( $self, $mode ) = @_;
 
-    my $fh = IO::File->new( $self->fullpath, @args );
-       $fh = Coro::Handle::unblock $fh;
+    $mode = '<'     if ( $mode eq 'r' );
+    $mode = '>'     if ( $mode eq 'w' );
+    $mode = '>>'    if ( $mode eq 'a' );
+
+    my $path = $self->fullpath;
+
+    open( my $fh, $mode, $path )
+        or Tsukumo::Exception::FileIOError->throw(
+            error   => "Cannot open file: ${path}: ${!}",
+            path    => $path,
+            action  => 'open'
+        );
+
+    $fh = Coro::Handle::unblock $fh;
 
     return $fh;
 }
 
 sub openr {
-    my ( $self, @args ) = @_;
-    return $self->open('r', @args);
+    my ( $self ) = @_;
+    return $self->open('r');
 }
 
 sub openw {
-    my ( $self, @args ) = @_;
-    return $self->open('w', @args);
+    my ( $self ) = @_;
+    return $self->open('w');
 }
 
 sub slurp {

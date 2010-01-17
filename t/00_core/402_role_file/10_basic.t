@@ -18,26 +18,28 @@ use File::Temp qw( tempfile );
     __END_OF_CLASS__;
 }
 
-my $pm  = $basedir->file('lib/Tsukumo.pm');
+my $root    = "${basedir}";
+my $pm      = "${root}/lib/Tsukumo.pm";
 
-my $file = MyFile->new( fullpath => $pm->stringify );
+my $file = MyFile->new( fullpath => $pm );
 
-is( $file->path, $pm->parent->stringify );
+is( $file->path, "${root}/lib" );
 is( $file->filename, 'Tsukumo' );
 is( $file->file_extension, 'pm' );
-is( $file->fullpath, $pm->stringify );
+is( $file->fullpath, $pm );
 
-my $date = $pm->stat->mtime;
+my $stat = File::stat::stat( $pm );
+my $date = $stat->mtime;
 
 is_deeply( $file->created->epoch,      $date );
 is_deeply( $file->lastmodified->epoch, $date );
 
 is_deeply(
     $file->filestat,
-    $pm->stat,
+    $stat,
 );
 
-$file = MyFile->new( fullpath => $examples->file('core/role_file/foo.txt')->stringify );
+$file = MyFile->new( fullpath => "${examples}/core/role_file/foo.txt" );
 
 my $data = $file->slurp;
 my @data = $file->slurp( chomp => 1 );

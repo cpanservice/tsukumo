@@ -50,7 +50,6 @@ requires 'File::Spec::Unix';
 
 # Tsukumo::Role::File
 requires 'Coro::Handle';
-requires 'IO::File';
 requires 'File::stat';
 
 ## -- required by test files -------- ##
