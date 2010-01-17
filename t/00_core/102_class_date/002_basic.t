@@ -15,7 +15,7 @@ is( $date->epoch, 0 );
 is( $date->year, 1970);
 is( $date->month, 1 );
 is( $date->day,   1 );
-is( $date->dayweek, 5 );
+is( $date->dayweek, 4 );
 is( $date->hour,  0 );
 is( $date->minute, 0 );
 is( $date->second, 0 );

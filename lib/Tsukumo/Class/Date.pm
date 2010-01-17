@@ -2,7 +2,8 @@ package Tsukumo::Class::Date;
 
 use strict;
 use Tsukumo::Class;
-use Tsukumo::Types::Date qw( Epoch TimePiece Year Month Day DayWeek Hour Minute Second TZOffset );
+use Tsukumo::Types::Date qw( Epoch Year Month Day DayWeek Hour Minute Second TZOffset );
+use Tsukumo::Types::Builtin qw( ArrayRef );
 
 use Time::Local ();
 use Date::Parse ();
@@ -48,14 +49,13 @@ sub _build_epoch {
 
 has __time => (
     is      => 'ro',
-    isa     => TimePiece,
-    coerce  => 1,
+    isa     => ArrayRef,
     lazy    => 1,
     clearer => '_clear___time',
     builder => '_build___time',
 );
 
-sub _build___time { return $_[0]->epoch }
+sub _build___time {[ gmtime $_[0]->epoch ]}
 
 has [ @properties ] => (
     trigger => sub {
@@ -122,13 +122,13 @@ has '+second' => (
 );
 
 
-sub _build_year     { $_[0]->__time->year   }
-sub _build_month    { $_[0]->__time->mon    }
-sub _build_day      { $_[0]->__time->mday   }
-sub _build_dayweek  { $_[0]->__time->wday   }
-sub _build_hour     { $_[0]->__time->hour   }
-sub _build_minute   { $_[0]->__time->minute }
-sub _build_second   { $_[0]->__time->second }
+sub _build_year     { $_[0]->__time->[5] + 1900 }
+sub _build_month    { $_[0]->__time->[4] + 1    }
+sub _build_day      { $_[0]->__time->[3]        }
+sub _build_dayweek  { $_[0]->__time->[6]        }
+sub _build_hour     { $_[0]->__time->[2]        }
+sub _build_minute   { $_[0]->__time->[1]        }
+sub _build_second   { $_[0]->__time->[0]        }
 
 has tzoffset => (
     is      => 'rw',
@@ -233,158 +233,25 @@ sub time {
 
 __END_OF_CLASS__;
 
-
-__END__
-
-=pod
-
-sub w3cdtf {
-    my ( $self ) = @_;
-
-    my $date    = $self->datetime;
-    my $offset  = $self->tzoffset;
-
-    my $tz;
-    if ( $offset == 0 ) {
-        $tz = 'Z';
-    }
-    else {
-        my $pm  = ( $offset > 0 ) ? '+' : '-';
-        my $hr  = int( $offset / ( 60 * 60 ) );
-        my $min = ( $offset - ( $hr * 60 * 60 ) ) / 60;
-           $tz  = "${pm}" . sprintf('%02d', $hr) . ':' . sprintf('%02d', $min);
-    }
-
-    return "${date}${tz}";
-}
-
-sub datetime {
-    my ( $self ) = @_;
-
-    my $ymd     = $self->ymd('-');
-    my $time    = $self->time(':');
-
-    return "${ymd}T${time}";
-}
-
-sub ymd {
-    my $self = shift;
-    my $sep  = shift;
-       $sep  = q{-} if ( ! defined $sep );
-
-    return join $sep, ( $self->year, $self->month, $self->day );
-}
-
-sub time {
-    my $self = shift;
-    my $sep  = shift;
-       $sep  = q{:} if ( ! defined $sep );
-
-    return join $sep, ( $self->hour, $self->minute, $self->second );
-}
-
-sub parse_dwim {
-    my ( $class, $str ) = @_;
-
-    my ()
-        = 
-
-}
-
-sub parse_dwim {
-    my ( $class, $str ) = @_;
-    my $time = Date::Parse::str2time($str);
-
-    return $class->gmtime( $time );
-}
-
-sub timegm {
-    my $class = shift;
-    my @args  = @_;
-
-    my $offset;
-       $offset = pop @args if ( @args == 7 );
-       $offset = 0 if ( ! defined $offset );
-
-    my $time = Time::Local::timegm(@args);
-
-    return $class->gmtime( $time + $offset );
-}
-
-sub new_from_hash {
-    my ( $class, %args ) = @_;
-
-    my $year    = delete $args{'year'} or Tsukumo::Exception::InvalidArgumentError->throw( error => q{Argument 'year' is not set.} );
-    my $month   = ( delete $args{'month'}   || 1 ) - 1;
-    my $day     = delete $args{'day'}       || 1;
-    my $hr      = delete $args{'hour'}      || 0;
-    my $min     = delete $args{'minute'}    || 0;
-    my $sec     = delete $args{'second'}    || 0;
-    my $offset  = delete $args{'offset'}    || 0;
-    $year       = $year - 1900;
-
-    my $time    = Time::Local::timegm( $sec, $min, $hr, $day, $month, $year );
-    return $class->gmtime( $time + $offset );
-}
-
-sub clone {
-    my ( $self, %args ) = @_;
-
-    $args{'year'}   ||= $self->year;
-    $args{'month'}  ||= $self->mon;
-    $args{'day'}    ||= $self->mday;
-    $args{'hour'}   ||= $self->hour;
-    $args{'minute'} ||= $self->min;
-    $args{'second'} ||= $self->sec;
-    $args{'offset'} ||= scalar($self->tzoffset);
-
-    return $self->new_from_hash( %args );
-}
-
-sub now {
-    my ( $class, $offset ) = @_;
-
-    $offset ||= 0;
-
-    return $class->gmtime( time + $offset );
-}
-
-1;
-__END__
-
 =head1 NAME
 
-Tsukumo::Class::Date - L<Time::Piece> subclass for Tsukumo
+Tsukumo::Class::Date - Datetime onject for Tsukumo.
 
 =head1 SYNPOSIS
 
     use Tsukumo::Class::Date;
-    
-    my $time = gmtime( time );
-    
-    print $time->year;
+
+    my $date = Tsukumo::Class::Date->now;
 
 =head1 DESCRIPTION
 
-This class is L<Time::Piece> subclass for Tsukumo.
+This class is datetime object for Tsukumo.
 
 =head1 METHODS
 
-See L<Time::Piece> document.
+=head2 C<new>
 
-=head2 C<new_from_hash>
-
-    my $date = Tsukumo::Class::Date->new_from_hash(
-        year    => 2009,
-        month   => 12,
-        day     => 24,
-        hour    => 12,
-        minute  => 10,
-        second  => 30,
-        offset  => 9 * 60 * 60,
-    );
-
-This method is make instance from hash.
+    my $date = Tsukumo::Class::Date->new( epoch => time );
 
 =head2 C<parse_dwim>
 
@@ -396,20 +263,9 @@ Parse datetime string function is implemented by L<Date::Parse>.
 
 Please see L<Date::Parse> about support datetime format.
 
-=head2 C<timegm>
-
-    my $date = Tsukumo::Class::Date->timegm( 0, 0, 0, 1, 1, 1970 );
-
-Same as:
-
-    my $date = Tsukumo::Class::Date->gmtime( Time::Local::timegm( 0, 0, 0, 1, 1, 1970 ) );
-
-See also L<Time::Local>.
-
 =head2 C<now>
 
     my $now = Tsukumo::Class::Date->now;                # same as Tsukumo::Class::Date->new( time );
-    my $now = Tsukumo::Class::Date->now( $tzoffset );   # same as Tsukumo::Class::Date->new( time + $tzoffset );
 
 This method is same C<Tsukumo::Class::Date-E<gt>new( time )>.
 
@@ -421,13 +277,43 @@ This method is same C<Tsukumo::Class::Date-E<gt>new( time )>.
 
 This method is clone datetime object.
 
+=head2 C<ymd>
 
+    my $date = $date->ymd;      # YYYY-MM-DD
+    my $date = $date->ymd('/'); # YYYY/MM/DD
+
+=head2 C<time>
+
+    my $time = $date->time;     # HH:MM:SS
+    my $time = $date->time(':') # HH.MM.SS
 
 =head2 C<w3cdtf>
 
-    my w3cdtf = localtime->w3cdtf;
+    my w3cdtf = $date->w3cdtf;
 
 This method is returned W3C datetime format datetime.
+
+=head1 PROPERTIES
+
+=head2 C<epoch>
+
+=head2 C<year>
+
+=head2 C<month>
+
+=head2 C<day>
+
+=head2 C<dayweek>
+
+=head2 C<hour>
+
+=head2 C<minute>
+
+=head2 C<second>
+
+=head2 C<tzoffset>
+
+=head2 C<gmt>
 
 =head1 AUTHOR
 

@@ -4,14 +4,10 @@ use strict;
 use warnings;
 
 use Test::More;
-use Tsukumo::Types::Date qw( Epoch TimePiece Year Month Day DayWeek Hour Minute Second TZOffset TimeZone );
+use Tsukumo::Types::Date qw( Epoch Year Month Day DayWeek Hour Minute Second TZOffset TimeZone );
 
 ok( Epoch->check(0) );
 ok( ! Epoch->check(-1) );
-
-ok( TimePiece->check( Time::Piece->new(time) ) );
-ok( ! TimePiece->check(1) );
-isa_ok( TimePiece->coerce(0), 'Time::Piece' );
 
 ok( Year->check(1970) );
 ok( Year->check(2009) );

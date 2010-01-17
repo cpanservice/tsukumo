@@ -3,27 +3,15 @@ package Tsukumo::Types::Date;
 use strict;
 use Tsukumo::Class (
     'X::Types' => [ -declare => [qw(
-        Epoch TimePiece Year Month Day DayWeek Hour Minute Second TZOffset TimeZone
+        Epoch Year Month Day DayWeek Hour Minute Second TZOffset TimeZone
     )] ]
 );
 use Tsukumo::Types::Builtin qw( Str Int Object );
-use Time::Piece ();
 
 subtype Epoch,
     as Int,
     where { $_ >= 0 },
     message { "Argument '$_' is not positive number." }
-;
-
-subtype TimePiece,
-    as Object,
-    where { $_->isa('Time::Piece') },
-    message { 'Argument is not Time::Piece object' }
-;
-
-coerce TimePiece,
-    from Int,
-        via { Time::Piece->gmtime($_) },
 ;
 
 subtype Year,
@@ -116,8 +104,6 @@ Tsukumo::Types::Date - date property types for L<Tsukumo::Class::Date>.
 =head1 TYPES
 
 =head2 C<Epoch>
-
-=head2 C<TimePiece>
 
 =head2 C<Year>
 

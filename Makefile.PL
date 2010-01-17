@@ -41,7 +41,6 @@ requires 'YAML';
 # Tsukumo::Class::Date, Tsukumo::Types::Date
 requires 'Time::Local';
 requires 'Date::Parse';
-requires 'Time::Piece';
 
 ## path, filesys
 
