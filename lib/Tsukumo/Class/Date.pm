@@ -5,9 +5,6 @@ use Tsukumo::Class;
 use Tsukumo::Types::Date qw( Epoch Year Month Day DayWeek Hour Minute Second TZOffset );
 use Tsukumo::Types::Builtin qw( ArrayRef );
 
-use Time::Local ();
-use Date::Parse ();
-
 my @properties = qw( year month day dayweek hour minute second );
 
 has epoch => (
@@ -44,6 +41,7 @@ sub _build_epoch {
     $minute ||= 0;
     $second ||= 0;
 
+    require Time::Local;
     return Time::Local::timegm( $second, $minute, $hour, $day, ( $month - 1 ), $year );
 }
 
@@ -138,7 +136,11 @@ has tzoffset => (
     builder => '_build_tzoffset',
 );
 
-sub _build_tzoffset { my $now = time; Time::Local::timegm(localtime($now)) - Time::Local::timegm(gmtime($now)) }
+sub _build_tzoffset {
+    my $now = time;
+    require Time::Local;
+    return Time::Local::timegm(localtime($now)) - Time::Local::timegm(gmtime($now));
+}
 
 has gmt => (
     is      => 'ro',
@@ -159,6 +161,7 @@ sub _build_gmt {
 sub parse_dwim {
     my ( $class, $date ) = @_;
 
+    require Date::Parse;
     my ( $sec, $min, $hr, $da, $mo, $yr, $zone ) = Date::Parse::strptime($date);
 
     return $class->new(

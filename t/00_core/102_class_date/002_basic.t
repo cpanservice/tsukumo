@@ -5,6 +5,7 @@ use warnings;
 
 use Tsukumo::Class::Date;
 use Test::More;
+use Time::Local ();
 
 my $time    = 0;
 my $offset  = Time::Local::timegm(localtime(0)) - Time::Local::timegm(gmtime(0));
