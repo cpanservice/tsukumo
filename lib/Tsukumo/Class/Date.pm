@@ -37,14 +37,14 @@ sub _build_epoch {
     my ( $year, $month, $day, $hour, $minute, $second )
         = @{ $self }{qw( year month day hour minute second )};
 
-    $year   ||= Time::Piece->gmtime->year;
+    $year   ||= [gmtime]->[5];
     $month  ||= 1;
     $day    ||= 1;
     $hour   ||= 0;
     $minute ||= 0;
     $second ||= 0;
 
-    return Time::Local::timegm( $second, $minute, $hour, $day, ( $month - 1 ), ( $year - 1900 ) );
+    return Time::Local::timegm( $second, $minute, $hour, $day, ( $month - 1 ), $year );
 }
 
 has __time => (
