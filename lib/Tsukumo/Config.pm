@@ -3,8 +3,8 @@ package Tsukumo::Config;
 use strict;
 use warnings;
 
+use Tsukumo::Class::Variables;
 use parent qw( Tsukumo::Class::Variables );
-
 
 
 1;
