@@ -1,6 +1,5 @@
 package Tsukumo::Types::Date;
 
-use strict;
 use Tsukumo::Class (
     'X::Types' => [ -declare => [qw(
         Epoch Year Month Day DayWeek Hour Minute Second TZOffset TimeZone

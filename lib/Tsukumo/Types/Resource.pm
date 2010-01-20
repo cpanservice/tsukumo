@@ -1,6 +1,5 @@
 package Tsukumo::Types::Resource;
 
-use strict;
 use Tsukumo::Class 'X::Types' => [ -declare => [qw(
     Resource File YAML Perl
 )] ];

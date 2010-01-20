@@ -1,6 +1,5 @@
 package Tsukumo::Types::Formatter;
 
-use strict;
 use Tsukumo::Class 'X::Types' => [ -declare => [qw(
     Formatter 
     PerlFormatter YAMLFormatter PlainTextFormatter

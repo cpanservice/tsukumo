@@ -1,6 +1,5 @@
 package Tsukumo::Format::YAML;
 
-use strict;
 use Tsukumo::Class;
 use Tsukumo::Types::Builtin qw( HashRef Str );
 use Tsukumo::Utils qw( load_class is_class_loaded );

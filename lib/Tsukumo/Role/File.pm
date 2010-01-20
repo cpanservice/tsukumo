@@ -1,6 +1,5 @@
 package Tsukumo::Role::File;
 
-use strict;
 use Tsukumo::Role;
 use Tsukumo::Exceptions;
 use Coro::Handle ();

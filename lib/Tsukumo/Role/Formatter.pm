@@ -1,6 +1,5 @@
 package Tsukumo::Role::Formatter;
 
-use strict;
 use Tsukumo::Role;
 
 requires qw( name extensions parse format );

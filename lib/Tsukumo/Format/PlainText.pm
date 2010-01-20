@@ -1,6 +1,5 @@
 package Tsukumo::Format::PlainText;
 
-use strict;
 use Tsukumo::Class;
 use Tsukumo::Role::Formatter;
 

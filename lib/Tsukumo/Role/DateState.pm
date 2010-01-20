@@ -1,6 +1,5 @@
 package Tsukumo::Role::DateState;
 
-use strict;
 use Tsukumo::Role;
 use Tsukumo::Types qw( DateTime );
 

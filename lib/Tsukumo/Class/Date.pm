@@ -1,6 +1,5 @@
 package Tsukumo::Class::Date;
 
-use strict;
 use Tsukumo::Class;
 use Tsukumo::Types::Date qw( Epoch Year Month Day DayWeek Hour Minute Second TZOffset );
 use Tsukumo::Types::Builtin qw( ArrayRef );

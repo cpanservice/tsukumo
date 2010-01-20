@@ -1,6 +1,5 @@
 package Tsukumo::Format::Perl;
 
-use strict;
 use Tsukumo::Class;
 use Tsukumo::Exceptions qw( evaluate_code_failed );
 use Tsukumo::Types::Builtin qw( HashRef );

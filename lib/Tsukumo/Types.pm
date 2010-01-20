@@ -1,6 +1,5 @@
 package Tsukumo::Types;
 
-use strict;
 use Tsukumo::Class (
     'X::Types'  => [ -declare => [qw(
         FilePath FileName FileExtension

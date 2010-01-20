@@ -1,6 +1,5 @@
 package Tsukumo::Resource::File;
 
-use strict;
 use Tsukumo::Class;
 use Tsukumo::Types::Formatter qw( Formatter );
 use Tsukumo::Exceptions qw( file_io_error );

@@ -1,6 +1,5 @@
 package Tsukumo::Class::Hookable;
 
-use strict;
 use Tsukumo::Class;
 
 extends 'Class::Hookable';
