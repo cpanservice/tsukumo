@@ -2,9 +2,9 @@ package Tsukumo::Role::File;
 
 use Tsukumo::Role;
 use Tsukumo::Exceptions;
-use Tsukumo::Utils ();
+
 use File::stat ();
-use IO::File;
+use Coro::Handle ();
 
 use Tsukumo::Role::Path;
 use Tsukumo::Role::DateState;
@@ -25,12 +25,7 @@ sub open {
             action  => 'open',
         );
 
-    if ( Tsukumo::Utils::is_class_loaded('Coro') ) {
-        require Coro::Handle;
-        $fh = Coro::Handle->new_from_fh( $fh );
-    }
-
-    return $fh;
+    return Coro::Handle->new_from_fh( $fh );
 }
 
 sub openr {
@@ -45,12 +40,12 @@ sub openw {
 
 sub slurp {
     my ( $self, %args ) = @_;
-    my $fh = $self->openr;
 
-    my $method = ( $fh->isa('Coro::Handle') ) ? 'readline' : 'getline' ;
+    my $fh = $self->openr;
+       $fh->readable;
 
     my @data;
-    while ( my $line = $fh->$method ) {
+    while ( my $line = $fh->readline ) {
         push @data, $line;
     }
 

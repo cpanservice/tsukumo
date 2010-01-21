@@ -5,7 +5,7 @@ use warnings;
 
 use Coro;
 
-use Test::More tests => 10;
+use Test::More tests => 11;
 use t::Util qw( $basedir $examples );
 use Tsukumo::Class::Date;
 use File::Temp qw( tempfile );
@@ -57,3 +57,16 @@ baz
 __FILE__
 
 is_deeply( [ @data ], [qw( foo bar baz )] );
+
+my @jobs = ();
+my @num  = ();
+
+push @jobs, async { push @num, 1; my @content = $file->slurp; push @num, 2 };
+push @jobs, async { push @num, 3; my $content = $file->slurp; push @num, 4 };
+
+$_->join for @jobs;
+
+is_deeply(
+    [ @num ],
+    [ 1, 3, 2, 4 ],
+);
