@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Test::More;
-use Tsukumo::Types::Date qw( Epoch Year Month Day DayWeek Hour Minute Second TZOffset TimeZone );
+use Tsukumo::Types::DateProperty qw( Epoch Year Month Day DayWeek Hour Minute Second TZOffset TimeZone );
 
 ok( Epoch->check(0) );
 ok( ! Epoch->check(-1) );

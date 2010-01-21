@@ -1,7 +1,7 @@
 package Tsukumo::Class::Date;
 
 use Tsukumo::Class;
-use Tsukumo::Types::Date qw( Epoch Year Month Day DayWeek Hour Minute Second TZOffset );
+use Tsukumo::Types::DateProperty qw( Epoch Year Month Day DayWeek Hour Minute Second TZOffset );
 use Tsukumo::Types::Builtin qw( ArrayRef );
 
 my @properties = qw( year month day dayweek hour minute second );

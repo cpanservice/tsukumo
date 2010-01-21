@@ -1,13 +1,13 @@
 package Tsukumo::Role::DateState;
 
 use Tsukumo::Role;
-use Tsukumo::Types qw( DateTime );
+use Tsukumo::Types::Date qw( Date );
 
 requires qw( datestat );
 
 has created => (
     is      => 'rw',
-    isa     => DateTime,
+    isa     => Date,
     coerce  => 1,
     builder => '_build_created',
     clearer => 'clear_created',
@@ -16,7 +16,7 @@ has created => (
 
 has lastmodified => (
     is      => 'rw',
-    isa     => DateTime,
+    isa     => Date,
     coerce  => 1,
     builder => '_build_lastmodified',
     clearer => 'clear_lastmodified',
@@ -33,7 +33,7 @@ sub is_modified {
     my ( $self ) = @_;
 
     my $lastmod = $self->lastmodified;
-    my $latest  = DateTime->coerce( $self->_build_lastmodified );
+    my $latest  = Date->coerce( $self->_build_lastmodified );
 
     return $lastmod->epoch != $latest->epoch;
 }
@@ -123,7 +123,7 @@ Naoki Okamura (Nyarla) E<lt>nyarla[ at ]thotep.netE<gt>
 
 =head1 SEE ALSO
 
-L<Tsukumo::Class::Date>, L<Tsukumo::Types>
+L<Tsukumo::Class::Date>, L<Tsukumo::Types::Date>
 
 =head1 LICENSE
 

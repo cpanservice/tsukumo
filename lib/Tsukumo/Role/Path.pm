@@ -1,8 +1,7 @@
 package Tsukumo::Role::Path;
 
-use strict;
 use Tsukumo::Role;
-use Tsukumo::Types qw( FilePath FileName FileExtension );
+use Tsukumo::Types::Path qw( FilePath FileName FileExtension );
 
 use File::Spec::Unix;
 

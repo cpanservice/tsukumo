@@ -5,4 +5,4 @@ use warnings;
 
 use Test::More tests => 1;
 
-BEGIN { use_ok('Tsukumo::Types::Date') };
+BEGIN { use_ok('Tsukumo::Types::DateProperty') };
