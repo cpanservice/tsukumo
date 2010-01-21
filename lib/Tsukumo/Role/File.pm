@@ -2,8 +2,9 @@ package Tsukumo::Role::File;
 
 use Tsukumo::Role;
 use Tsukumo::Exceptions;
-use Coro::Handle ();
+use Tsukumo::Utils ();
 use File::stat ();
+use IO::File;
 
 use Tsukumo::Role::Path;
 use Tsukumo::Role::DateState;
@@ -17,15 +18,17 @@ sub open {
     $mode = '>>'    if ( $mode eq 'a' );
 
     my $path = $self->fullpath;
-
     open( my $fh, $mode, $path )
         or Tsukumo::Exception::FileIOError->throw(
             error   => "Cannot open file: ${path}: ${!}",
             path    => $path,
-            action  => 'open'
+            action  => 'open',
         );
 
-    $fh = Coro::Handle::unblock $fh;
+    if ( Tsukumo::Utils::is_class_loaded('Coro') ) {
+        require Coro::Handle;
+        $fh = Coro::Handle->new_from_fh( $fh );
+    }
 
     return $fh;
 }
@@ -44,8 +47,10 @@ sub slurp {
     my ( $self, %args ) = @_;
     my $fh = $self->openr;
 
+    my $method = ( $fh->isa('Coro::Handle') ) ? 'readline' : 'getline' ;
+
     my @data;
-    while ( my $line = $fh->readline ) {
+    while ( my $line = $fh->$method ) {
         push @data, $line;
     }
 
