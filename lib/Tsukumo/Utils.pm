@@ -43,8 +43,16 @@ sub env_value {
     return;
 }
 
+my %PathCache = ();
+
 sub rel2abs {
-    my $path    = shift;
+    my $source  = shift;
+
+    if ( exists $PathCache{$source} ) {
+        return $PathCache{$source};
+    }
+
+    my $path    = $source;
     my $is_dir  = $path =~ m{/$};
        $path    = File::Spec::Unix->canonpath($path);
        $path    =~ s{^/*}{};
@@ -52,6 +60,9 @@ sub rel2abs {
        $path    = "/${path}";
        $path    = "${path}/"    if ( $is_dir );
        $path    =~ s{/+}{/};
+
+    $PathCache{$source} = $path;
+
     return $path;
 }
 
