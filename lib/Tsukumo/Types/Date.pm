@@ -5,9 +5,7 @@ use Tsukumo::Types::Builtin qw( Str Int Object ArrayRef HashRef );
 use Tsukumo::Class::Date;
 
 subtype Date,
-    as Object,
-    where { $_->isa('Tsukumo::Class::Date') },
-    message { "Object is not Tsukumo::Class::Date object: ${_}" }
+    as 'Tsukumo::Class::Date',
 ;
 
 coerce Date,
