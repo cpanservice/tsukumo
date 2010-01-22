@@ -2,6 +2,7 @@ package Tsukumo::Types::Resource;
 
 use Tsukumo::Class 'X::Types' => [ -declare => [qw(
     Resource File YAML Perl
+    ResourceCollection
 )] ];
 use Tsukumo::Types::Builtin qw( ArrayRef HashRef Str );
 use Tsukumo::Role::Resource;
@@ -16,6 +17,28 @@ coerce Resource,
         via { Tsukumo::Resource->new( @{ $_ } ) },
     from HashRef,
         via { Tsukumo::Resource->new( %{ $_ } ) },
+;
+
+subtype ResourceCollection,
+    as ArrayRef[Resource],
+;
+
+coerce ResourceCollection,
+    from HashRef,
+        via { [ Tsukumo::Resource->new( %{ $_ } ) ] },
+    from Resource,
+        via { [ $_ ] },
+    from ArrayRef[ArrayRef|HashRef],
+        via {
+            my @list = @{ $_ };
+            for my $val ( @list ) {
+                my @args;
+                   @args = @{ $val } if ( ref $val eq 'ARRAY' );
+                   @args = %{ $val } if ( ref $val eq 'HASH'  );
+                $val = Tsukumo::Resource->new( @args );
+            }
+            return [ @list ];
+        },
 ;
 
 subtype File,
@@ -96,6 +119,8 @@ This types are Tsukumo resource types.
 =head1 TYPES
 
 =head2 C<Resource>
+
+=head2 C<ResourceCollection>
 
 =head2 C<File>
 
