@@ -1,4 +1,4 @@
-use inc::Module::Install;
+use inc::Module::Install 0.92; #0.92 has support for better ppd/OS package generation
 name 'Tsukumo';
 all_from 'lib/Tsukumo.pm';
 
@@ -68,4 +68,5 @@ author_tests 'xt';
 auto_include;
 auto_install;
 
+repository 'http://github.com/nyarla/tsukumo';
 WriteAll;
